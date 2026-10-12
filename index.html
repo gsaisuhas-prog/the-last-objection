@@ -12,7 +12,7 @@
   }
 
   body {
-    background: #060408;
+    background: #050307;
     color: #e2e8f0;
     font-family: 'Courier Prime', 'Courier New', monospace;
     min-height: 100vh;
@@ -30,8 +30,8 @@
     width: 100vw;
     height: 100vh;
     max-width: 1200px;
-    max-height: 820px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 0 2px #2b170e;
+    max-height: 840px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 0 2px #381e14;
     background: #09070d;
     border-radius: 8px;
     overflow: hidden;
@@ -39,19 +39,19 @@
     flex-direction: column;
   }
 
-  /* Scanline CRT Overlay */
+  /* Scanline CRT Filter Overlay */
   .crt-scanlines {
     position: absolute;
     inset: 0;
     z-index: 40;
     pointer-events: none;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
     background-size: 100% 3px, 6px 100%;
     display: block;
   }
 
-  /* Gavel Strike Flash */
+  /* Gavel Strike Flash Screen */
   #gavel-flash {
     position: absolute;
     inset: 0;
@@ -240,7 +240,7 @@
 
   .menu-btn {
     position: relative;
-    background: rgba(22, 14, 28, 0.7);
+    background: rgba(22, 14, 28, 0.75);
     border: 1px solid #452414;
     font-family: 'Cinzel', Georgia, serif;
     font-size: 13px;
@@ -255,7 +255,7 @@
 
   .menu-btn:hover, .menu-btn.active {
     color: #ffffff;
-    background: rgba(69, 36, 20, 0.9);
+    background: rgba(69, 36, 20, 0.92);
     border-color: #ef4444;
     text-shadow: 0 0 10px #f87171;
     box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
@@ -357,7 +357,7 @@
     padding: 3px 8px;
     border-radius: 12px;
     border: 1px solid #334155;
-    max-width: 400px;
+    max-width: 360px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -369,7 +369,7 @@
 
   .hud-actions {
     display: flex;
-    gap: 6px;
+    gap: 5px;
     align-items: center;
   }
 
@@ -389,7 +389,7 @@
     gap: 4px;
   }
 
-  .hud-btn:hover {
+  .hud-btn:hover, .hud-btn.active {
     background: #4a2113;
     border-color: #facc15;
     color: #ffffff;
@@ -451,20 +451,6 @@
   #location-banner.show {
     opacity: 1;
     transform: translateX(-50%) translateY(5px);
-  }
-
-  /* Tap ripple circle */
-  .tap-ripple {
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    border: 2px solid #facc15;
-    border-radius: 50%;
-    pointer-events: none;
-    transform: translate(-50%, -50%) scale(0.5);
-    opacity: 1;
-    transition: transform 0.4s ease-out, opacity 0.4s ease-out;
-    z-index: 30;
   }
 
   /* Dialogue Box */
@@ -597,7 +583,8 @@
 
   .touch-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
+    align-items: center;
   }
 
   .touch-act-btn {
@@ -613,12 +600,13 @@
     user-select: none;
   }
 
-  .touch-act-btn:active {
+  .touch-act-btn:active, .touch-act-btn.active {
     background: #78350f;
     color: #ffffff;
+    border-color: #facc15;
   }
 
-  /* ================= MODALS ================= */
+  /* ================= MODALS & TABS ================= */
   .game-modal-overlay {
     position: absolute;
     inset: 0;
@@ -640,7 +628,7 @@
     border: 2px solid #854d0e;
     border-radius: 8px;
     width: 100%;
-    max-width: 820px;
+    max-width: 860px;
     max-height: 90vh;
     display: flex;
     flex-direction: column;
@@ -676,6 +664,35 @@
   }
 
   .modal-close-x:hover { color: #f87171; }
+
+  /* Evidence Tabs Header */
+  .dossier-tab-row {
+    display: flex;
+    background: #1e1324;
+    border-bottom: 2px solid #573121;
+    padding: 0 12px;
+    gap: 6px;
+  }
+
+  .dossier-tab-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #94a3b8;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .dossier-tab-btn.active {
+    color: #fde047;
+    border-bottom-color: #facc15;
+    background: rgba(120, 53, 15, 0.2);
+  }
 
   .modal-inner-scroll {
     padding: 14px 18px;
@@ -827,6 +844,109 @@
   .btn-present-clue:hover {
     background: #dc2626;
     box-shadow: 0 0 12px #ef4444;
+  }
+
+  /* Suspect Profile Grid */
+  .suspects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 650px) {
+    .suspects-grid { grid-template-columns: 1fr; }
+  }
+
+  .suspect-card {
+    background: #1b1222;
+    border: 2px solid #573124;
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .suspect-pic {
+    width: 48px;
+    height: 48px;
+    background: #0f0914;
+    border: 1px solid #854d0e;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .suspect-name {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fde047;
+  }
+
+  .suspect-role {
+    font-size: 10px;
+    color: #38bdf8;
+    margin-bottom: 4px;
+  }
+
+  .suspect-bio {
+    font-size: 11px;
+    line-height: 1.4;
+    color: #cbd5e1;
+  }
+
+  /* Timeline Flow */
+  .timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-left: 2px solid #78350f;
+    padding-left: 14px;
+    margin-left: 6px;
+  }
+
+  .timeline-entry {
+    position: relative;
+    background: #18101e;
+    border: 1px solid #4a281c;
+    border-radius: 4px;
+    padding: 8px 12px;
+  }
+
+  .timeline-entry::before {
+    content: '';
+    position: absolute;
+    left: -21px;
+    top: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #facc15;
+    border: 2px solid #140d08;
+  }
+
+  .timeline-date {
+    font-size: 10px;
+    color: #f59e0b;
+    font-weight: bold;
+  }
+
+  .timeline-title {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #f1f5f9;
+  }
+
+  .timeline-text {
+    font-size: 11px;
+    color: #94a3b8;
+    line-height: 1.35;
+    margin-top: 2px;
   }
 
   /* Town Map UI */
@@ -1220,6 +1340,7 @@
     box-shadow: 0 0 12px rgba(253, 224, 71, 0.5);
   }
 </style>
+
 </head>
 <body>
 
@@ -1258,13 +1379,13 @@
       <div class="title-menu" id="menuContainer">
         <button class="menu-btn primary active" data-action="newgame" id="btnNewGame">NEW INVESTIGATION</button>
         <button class="menu-btn" data-action="continue" id="btnContinue">CONTINUE CASE</button>
-        <button class="menu-btn" data-action="evidence" id="btnTitleEvidence">EVIDENCE DOSSIER</button>
+        <button class="menu-btn" data-action="evidence" id="btnTitleEvidence">CASE DOSSIER</button>
         <button class="menu-btn" data-action="courtroom" id="btnTitleCourt">COURTROOM SHOWDOWN</button>
         <button class="menu-btn" data-action="settings" id="btnSettings">SETTINGS</button>
       </div>
 
       <div class="title-hint">
-        Navigate: <b>WASD / Arrow Keys / Click</b> · Select: <b>[ENTER] or [SPACE]</b>
+        Move: <b>WASD / Arrow Keys / Click</b> · Talk: <b>[E] or Click NPC</b>
       </div>
     </div>
   </div>
@@ -1279,10 +1400,13 @@
       </div>
       <div class="hud-actions">
         <button class="hud-btn" id="btnOpenBag">
-          💼 EVIDENCE <span class="clue-count-pill" id="bagCountPill">0/7</span> [B]
+          💼 DOSSIER <span class="clue-count-pill" id="bagCountPill">0/7</span> [B]
         </button>
         <button class="hud-btn" id="btnOpenMap">
-          🗺 TOWN MAP [M]
+          🗺 MAP [M]
+        </button>
+        <button class="hud-btn" id="btnToggleWeather">
+          🌧 RAIN: OFF
         </button>
         <button class="hud-btn" id="btnToggleAudio">
           🔊 AUDIO
@@ -1303,7 +1427,7 @@
     <div class="pokemon-dialogue-pane" id="dialoguePane">
       <div class="dialogue-header-line">
         <span class="dialogue-speaker-name" id="speakerLabel">JUSTIN VANCE (DEFENSE COUNSEL)</span>
-        <span class="dialogue-sub-hint">[CLICK / SPACE] Advance · [B] Bag · [M] Map</span>
+        <span class="dialogue-sub-hint">[CLICK / SPACE] Advance · [B] Dossier · [M] Map</span>
       </div>
       <div class="dialogue-text-body" id="dialogueText">
         My father, Judge Lawrence Vance, was killed inside the hospital's MRI scanner... Dr. Aris is accused, but my father trusted him for decades. I need to find the truth before the trial begins.
@@ -1312,7 +1436,7 @@
       <div class="dialogue-caret">▼</div>
     </div>
 
-    <!-- Universal Virtual Controller (Always Ready for Mouse & Touch) -->
+    <!-- Universal Virtual Controller -->
     <div class="touch-dpad-bar">
       <div class="dpad-grid">
         <div></div>
@@ -1327,21 +1451,28 @@
       </div>
       <div class="touch-actions">
         <button class="touch-act-btn" id="btnTouchInteract">A: EXAMINE</button>
-        <button class="touch-act-btn" id="btnTouchBag">B: EVIDENCE</button>
-        <button class="touch-act-btn" id="btnTouchMap">M: TOWN MAP</button>
+        <button class="touch-act-btn" id="btnTouchSprint">⚡ SPRINT</button>
+        <button class="touch-act-btn" id="btnTouchBag">B: DOSSIER</button>
+        <button class="touch-act-btn" id="btnTouchMap">M: MAP</button>
       </div>
     </div>
   </div>
 
-  <!-- EVIDENCE BAG MODAL -->
+  <!-- EVIDENCE & CASE DOSSIER MODAL WITH TABS -->
   <div class="game-modal-overlay" id="modalEvidenceBag">
     <div class="modal-window">
       <div class="modal-topbar">
-        <div class="modal-headline">💼 COURT EVIDENCE DOSSIER · KEY CLUES</div>
+        <div class="modal-headline">💼 CASE DOSSIER · JUDICIAL INVESTIGATION ARCHIVES</div>
         <div class="modal-close-x" id="btnCloseBag">✕</div>
       </div>
+      <div class="dossier-tab-row">
+        <button class="dossier-tab-btn active" id="tabBtnClues" onclick="switchDossierTab('clues')">🔬 FORENSIC EVIDENCE (0/7)</button>
+        <button class="dossier-tab-btn" id="tabBtnSuspects" onclick="switchDossierTab('suspects')">👥 SUSPECT PROFILES</button>
+        <button class="dossier-tab-btn" id="tabBtnTimeline" onclick="switchDossierTab('timeline')">⏱ CASE TIMELINE</button>
+      </div>
       <div class="modal-inner-scroll">
-        <div class="bag-layout">
+        <!-- TAB 1: CLUES -->
+        <div id="dossierTabClues" class="bag-layout">
           <div class="clue-list" id="clueListContainer"></div>
           <div class="clue-inspect-pane">
             <div>
@@ -1357,6 +1488,96 @@
               </div>
             </div>
             <button class="btn-present-clue" id="btnPresentCurrentClue">⚡ PRESENT THIS EVIDENCE IN COURT</button>
+          </div>
+        </div>
+
+        <!-- TAB 2: SUSPECT PROFILES -->
+        <div id="dossierTabSuspects" style="display:none;">
+          <div class="suspects-grid" id="suspectsGridContainer">
+            <div class="suspect-card">
+              <div class="suspect-pic">⚖️</div>
+              <div>
+                <div class="suspect-name">JUSTIN VANCE</div>
+                <div class="suspect-role">DEFENSE COUNSEL · JUDGE'S SON (PROTAGONIST)</div>
+                <div class="suspect-bio">A promising young defense attorney following in his father's footsteps. Refuses to believe the family dentist committed premeditated murder.</div>
+              </div>
+            </div>
+            <div class="suspect-card">
+              <div class="suspect-pic">👨‍⚖️</div>
+              <div>
+                <div class="suspect-name">JUDGE LAWRENCE VANCE</div>
+                <div class="suspect-role">VICTIM · HIGH BENCH CHIEF MAGISTRATE</div>
+                <div class="suspect-bio">Renowned for absolute integrity. Disbarred corrupt prodigy Kaizen Mercer two years ago. Killed inside a 3.0T MRI scanner when his artificial tooth became a magnetic projectile.</div>
+              </div>
+            </div>
+            <div class="suspect-card">
+              <div class="suspect-pic">🦷</div>
+              <div>
+                <div class="suspect-name">DR. ARIS</div>
+                <div class="suspect-role">DEFENDANT · ACCUSED FAMILY DENTIST</div>
+                <div class="suspect-bio">Treated Judge Vance for 25 years. Ordered a certified Swiss Palladium-100 crown. Currently imprisoned on charges of gross medical homicide.</div>
+              </div>
+            </div>
+            <div class="suspect-card">
+              <div class="suspect-pic">🍷</div>
+              <div>
+                <div class="suspect-name">KAIZEN MERCER</div>
+                <div class="suspect-role">RIVAL PROSECUTOR · MURDER MASTERMIND</div>
+                <div class="suspect-bio">A prodigal lawyer whose glittering career was shattered when Judge Vance caught him forging evidence in State v. Mercer. Consumed by obsessive vengeance.</div>
+              </div>
+            </div>
+            <div class="suspect-card">
+              <div class="suspect-pic">🥼</div>
+              <div>
+                <div class="suspect-name">DR. EVANS</div>
+                <div class="suspect-role">CHIEF RADIOLOGIST · FORENSIC WITNESS</div>
+                <div class="suspect-bio">Supervised the fatal MRI scan. Explains that the 3.0-Tesla magnet accelerated the ferromagnetic iron tooth to over 45 m/s, causing fatal cranial trauma.</div>
+              </div>
+            </div>
+            <div class="suspect-card">
+              <div class="suspect-pic">👤</div>
+              <div>
+                <div class="suspect-name">LEO (THE ORPHAN BURGLAR)</div>
+                <div class="suspect-role">DECEASED PAWN · DOCKLANDS THIEF</div>
+                <div class="suspect-bio">An orphan hired to break into Dr. Aris's clinic and swap the palladium tooth for iron. Poisoned with potassium cyanide after completing the job to silence him forever.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: CASE TIMELINE -->
+        <div id="dossierTabTimeline" style="display:none;">
+          <div class="timeline-list">
+            <div class="timeline-entry">
+              <div class="timeline-date">2 YEARS AGO · STATE v. MERCER</div>
+              <div class="timeline-title">Kaizen Mercer's Disbarment & Humiliation</div>
+              <div class="timeline-text">Young prosecutor Kaizen Mercer attempts to secure his career with fabricated ballistics. Judge Lawrence Vance uncovers the forgery and formally disbars him. Kaizen vows public revenge.</div>
+            </div>
+            <div class="timeline-entry">
+              <div class="timeline-date">1 MONTH AGO · ZURICH BIOMATERIALS</div>
+              <div class="timeline-title">Dr. Aris Orders Custom Palladium Crown #P-992</div>
+              <div class="timeline-text">Judge Vance needs an artificial dental implant. Dr. Aris orders an expensive non-magnetic Palladium-100 crown, knowing the Judge has annual cranial MRI scans.</div>
+            </div>
+            <div class="timeline-entry">
+              <div class="timeline-date">LAST TUESDAY · 03:15 AM</div>
+              <div class="timeline-title">The Clinic Break-In & Tampered Surveillance</div>
+              <div class="timeline-text">Leo the burglar arrives in a black sedan (Plate #7X-904), loops the clinic CCTV for 4 minutes, breaks into the clinic vault, steals the palladium crown, and leaves a pure iron clone.</div>
+            </div>
+            <div class="timeline-entry">
+              <div class="timeline-date">LAST THURSDAY · 10:00 AM</div>
+              <div class="timeline-title">The Fatal MRI Activation</div>
+              <div class="timeline-text">Judge Vance enters the 3.0-Tesla superconducting scanner. The magnetic field exerts 300+ Newtons of gradient force, tearing the iron molar into his skull. Judge Vance dies instantly.</div>
+            </div>
+            <div class="timeline-entry">
+              <div class="timeline-date">YESTERDAY · DOCKLANDS SAFEHOUSE</div>
+              <div class="timeline-title">The Burglar is Silenced with Cyanide</div>
+              <div class="timeline-text">Kaizen transfers $250,000 to the burglar's account, then delivers cyanide-laced coffee to erase the only living witness to the burglary.</div>
+            </div>
+            <div class="timeline-entry">
+              <div class="timeline-date">TODAY · SUPREME COURTROOM VIII</div>
+              <div class="timeline-title">State v. Dr. Aris: The Final Objection</div>
+              <div class="timeline-text">Justin Vance takes the defense lectern to prove Dr. Aris's innocence and unmask Kaizen Mercer before the High Magistrate.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1459,6 +1680,10 @@
             <span>CRT Scanline Overlay</span>
             <button class="hud-btn" id="toggleCrtBtn">ACTIVE</button>
           </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #33211b;">
+            <span>Atmospheric Rain</span>
+            <button class="hud-btn" id="toggleWeatherSettingsBtn">DISABLED</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1466,7 +1691,31 @@
 </div>
 
 <script>
-let lastWarpTime = 0;
+let isRaining = false;
+let isSprinting = false;
+const stepDust = [];
+const puddles = [];
+const rainDrops = [];
+for (let i = 0; i < 90; i++) {
+  rainDrops.push({
+    x: Math.random() * 800,
+    y: Math.random() * 480,
+    l: Math.random() * 12 + 8,
+    v: Math.random() * 6 + 9
+  });
+}
+
+function switchDossierTab(tabId) {
+  document.getElementById('dossierTabClues').style.display = tabId === 'clues' ? 'grid' : 'none';
+  document.getElementById('dossierTabSuspects').style.display = tabId === 'suspects' ? 'block' : 'none';
+  document.getElementById('dossierTabTimeline').style.display = tabId === 'timeline' ? 'block' : 'none';
+
+  document.getElementById('tabBtnClues').classList.toggle('active', tabId === 'clues');
+  document.getElementById('tabBtnSuspects').classList.toggle('active', tabId === 'suspects');
+  document.getElementById('tabBtnTimeline').classList.toggle('active', tabId === 'timeline');
+  AudioEngine.playBlip();
+}
+
 
 // ==================== GLOBAL STATE ====================
 let gameState = 'title'; // 'title' | 'playing' | 'court_battle'
@@ -2065,12 +2314,22 @@ const TILE_SIZE = 32;
 function drawTile(ctx, type, x, y) {
   switch(type) {
     case 'grass':
-      ctx.fillStyle = '#1e3a1e';
+      ctx.fillStyle = '#1e3d22';
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-      ctx.fillStyle = '#2d5a2d';
+      ctx.fillStyle = '#2d5a32';
       ctx.fillRect(x + 4, y + 6, 2, 6);
       ctx.fillRect(x + 18, y + 20, 2, 6);
       ctx.fillRect(x + 24, y + 8, 2, 4);
+      // Wildflowers
+      if ((x * 7 + y * 13) % 5 === 0) {
+        ctx.fillStyle = '#fde047';
+        ctx.fillRect(x + 10, y + 14, 3, 3);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x + 9, y + 13, 1, 1);
+      } else if ((x * 11 + y * 3) % 7 === 0) {
+        ctx.fillStyle = '#f43f5e';
+        ctx.fillRect(x + 22, y + 12, 3, 3);
+      }
       break;
 
     case 'road':
@@ -2084,33 +2343,49 @@ function drawTile(ctx, type, x, y) {
     case 'road_dash':
       ctx.fillStyle = '#222226';
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-      ctx.fillStyle = '#facc15';
-      ctx.fillRect(x + 8, y + 14, 16, 4);
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(x + 6, y + 13, 20, 3);
+      ctx.fillRect(x + 6, y + 17, 20, 3);
       break;
 
     case 'sidewalk':
-      ctx.fillStyle = '#71717a';
+      ctx.fillStyle = '#82828b';
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-      ctx.strokeStyle = '#52525b';
+      ctx.strokeStyle = '#5f5f67';
       ctx.lineWidth = 1;
       ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#6b6b74';
+      ctx.fillRect(x + 1, y + 1, TILE_SIZE - 2, 1);
       break;
 
     case 'brick_wall':
-      ctx.fillStyle = '#7c2d12';
+      ctx.fillStyle = '#831843';
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-      ctx.fillStyle = '#451a03';
+      ctx.fillStyle = '#4c0519';
       ctx.fillRect(x, y + 10, TILE_SIZE, 2);
       ctx.fillRect(x, y + 22, TILE_SIZE, 2);
       ctx.fillRect(x + 16, y, 2, 10);
       ctx.fillRect(x + 8, y + 12, 2, 10);
+      ctx.fillRect(x + 24, y + 12, 2, 10);
+      // Window with reflection
+      if ((x * 3 + y * 5) % 8 === 0) {
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(x + 8, y + 4, 16, 14);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(x + 10, y + 6, 5, 10);
+        ctx.fillRect(x + 17, y + 6, 5, 10);
+      }
       break;
 
     case 'hospital_wall':
-      ctx.fillStyle = '#e2e8f0';
+      ctx.fillStyle = '#f8fafc';
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
       ctx.fillStyle = '#0284c7';
       ctx.fillRect(x, y + 20, TILE_SIZE, 4);
+      // Red Cross Emblem
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(x + 14, y + 4, 4, 12);
+      ctx.fillRect(x + 10, y + 8, 12, 4);
       break;
 
     case 'clinic_wall':
@@ -2118,32 +2393,45 @@ function drawTile(ctx, type, x, y) {
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
       ctx.fillStyle = '#0ea5e9';
       ctx.fillRect(x, y + 14, TILE_SIZE, 3);
+      // Tooth silhouette emblem
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(x + 12, y + 4, 8, 7);
+      ctx.fillRect(x + 11, y + 11, 4, 5);
+      ctx.fillRect(x + 17, y + 11, 4, 5);
       break;
 
     case 'wood_wall':
-      ctx.fillStyle = '#3f1a08';
+      ctx.fillStyle = '#451a03';
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-      ctx.fillStyle = '#241005';
+      ctx.fillStyle = '#261005';
       ctx.fillRect(x + 15, y, 2, TILE_SIZE);
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(x, y, TILE_SIZE, 2);
       break;
 
     case 'court_wall':
-      ctx.fillStyle = '#cbd5e1';
+      ctx.fillStyle = '#e2e8f0';
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
       ctx.fillStyle = '#b45309';
       ctx.fillRect(x, y + 24, TILE_SIZE, 4);
+      // Classical column fluting
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(x + 6, y, 3, 24);
+      ctx.fillRect(x + 22, y, 3, 24);
       break;
 
     case 'wood_floor':
-      ctx.fillStyle = '#78350f';
+      ctx.fillStyle = '#92400e';
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-      ctx.strokeStyle = '#451a03';
+      ctx.strokeStyle = '#57270b';
       ctx.lineWidth = 1;
       ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#b45309';
+      ctx.fillRect(x + 4, y + 6, TILE_SIZE - 8, 2);
       break;
 
     case 'tile_floor':
-      ctx.fillStyle = '#f1f5f9';
+      ctx.fillStyle = '#f8fafc';
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
       ctx.strokeStyle = '#cbd5e1';
       ctx.lineWidth = 1;
@@ -2151,9 +2439,9 @@ function drawTile(ctx, type, x, y) {
       break;
 
     case 'court_tile':
-      ctx.fillStyle = '#dbeafe';
+      ctx.fillStyle = '#e0e7ff';
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-      ctx.strokeStyle = '#93c5fd';
+      ctx.strokeStyle = '#a5b4fc';
       ctx.lineWidth = 1;
       ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
       break;
@@ -2167,13 +2455,17 @@ function drawTile(ctx, type, x, y) {
       break;
 
     case 'tree':
-      ctx.fillStyle = '#14532d';
+      ctx.fillStyle = '#064e3b';
       ctx.beginPath();
-      ctx.arc(x + 16, y + 14, 14, 0, Math.PI * 2);
+      ctx.arc(x + 16, y + 14, 15, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#166534';
+      ctx.fillStyle = '#047857';
       ctx.beginPath();
-      ctx.arc(x + 14, y + 12, 10, 0, Math.PI * 2);
+      ctx.arc(x + 13, y + 11, 11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath();
+      ctx.arc(x + 11, y + 9, 6, 0, Math.PI * 2);
       ctx.fill();
       ctx.fillStyle = '#78350f';
       ctx.fillRect(x + 14, y + 24, 4, 8);
@@ -2190,8 +2482,9 @@ function drawTile(ctx, type, x, y) {
       ctx.fillStyle = '#0284c7';
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
       ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(x + 4, y + 8, 12, 3);
-      ctx.fillRect(x + 16, y + 20, 10, 3);
+      const wave = Math.sin((Date.now() / 300) + (x + y) * 0.1) * 3;
+      ctx.fillRect(x + 4, y + 6 + wave, 12, 3);
+      ctx.fillRect(x + 16, y + 18 - wave, 10, 3);
       break;
 
     default:
@@ -2214,7 +2507,7 @@ const worldMaps = {
       { id: 'leather_couch', x: 18, y: 7, w: 4, h: 2, name: "CHESTERFIELD SOFA", text: "A burgundy leather sofa where clients used to wait for consultations.", type: 'desk' }
     ],
     warps: [
-      { x: 12, y: 14, targetMap: 'overworld', targetX: 8, targetY: 16, label: "EXIT TO DISTRICT" }
+      { x: 12, y: 14, targetMap: 'overworld', targetX: 8, targetY: 15, label: "EXIT TO DISTRICT" }
     ],
     npcs: [
       { id: 'assistant', x: 6, y: 5, name: "LEGAL CLERK MAYA", sprite: 'radiologist', text: "Mr. Vance, I'm so sorry about your father. The police rushed to arrest Dr. Aris, but you should check Memorial Hospital's MRI wing and the dental clinic!" }
@@ -3120,7 +3413,6 @@ function returnToTitle() {
 }
 
 function warpToMap(mapId, startX, startY) {
-  lastWarpTime = Date.now();
   const target = worldMaps[mapId];
   if (!target) return;
 
@@ -3320,8 +3612,18 @@ function updatePlayerMovement() {
 
   player.isMoving = (dx !== 0 || dy !== 0);
 
-  const nextX = player.x + dx * player.speed;
-  const nextY = player.y + dy * player.speed;
+  const currentSpeed = (keys['shift'] || isSprinting) ? 5.5 : 3.4;
+  const nextX = player.x + dx * currentSpeed;
+  const nextY = player.y + dy * currentSpeed;
+
+  if (player.isMoving && Math.random() < 0.3) {
+    stepDust.push({
+      x: player.x + 13 - camera.x,
+      y: player.y + 26 - camera.y,
+      r: (keys['shift'] || isSprinting) ? 3.5 : 2,
+      alpha: 0.6
+    });
+  }
 
   if (!checkWorldCollision(nextX, player.y)) player.x = nextX;
   if (!checkWorldCollision(player.x, nextY)) player.y = nextY;
@@ -3333,19 +3635,15 @@ function updatePlayerMovement() {
   }
 
   // Automatic Door Warp Check
-  const now = Date.now();
-  if (now - lastWarpTime > 800) {
-    for (let warp of currentMap.warps) {
-      const wx = warp.x * TILE_SIZE + 16;
-      const wy = warp.y * TILE_SIZE + 16;
-      if (Math.hypot(player.x + 13 - wx, player.y + 14 - wy) < 22) {
-        if (warp.reqClue && !allClues[warp.reqClue].unlocked) {
-          showDialogue("LOCKED PERIMETER", "Police tape blocks the entrance. You need verified vehicle surveillance records to search this warehouse.");
-        } else {
-          lastWarpTime = now;
-          warpToMap(warp.targetMap, warp.targetX, warp.targetY);
-          break;
-        }
+  for (let warp of currentMap.warps) {
+    const wx = warp.x * TILE_SIZE + 16;
+    const wy = warp.y * TILE_SIZE + 16;
+    if (Math.hypot(player.x + 13 - wx, player.y + 14 - wy) < 22) {
+      if (warp.reqClue && !allClues[warp.reqClue].unlocked) {
+        // Locked
+      } else {
+        warpToMap(warp.targetMap, warp.targetX, warp.targetY);
+        break;
       }
     }
   }
@@ -3495,6 +3793,50 @@ function drawWorld() {
     clickRipple.alpha -= 0.05;
     if (clickRipple.alpha <= 0) clickRipple = null;
   }
+
+  // 6. Draw Step Dust Particles
+  for (let i = stepDust.length - 1; i >= 0; i--) {
+    const d = stepDust[i];
+    ctx.fillStyle = `rgba(203, 213, 225, ${d.alpha})`;
+    ctx.beginPath();
+    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+    ctx.fill();
+    d.r += 0.2;
+    d.alpha -= 0.05;
+    if (d.alpha <= 0) stepDust.splice(i, 1);
+  }
+
+  // 7. Atmospheric Rain Effects
+  if (isRaining) {
+    ctx.strokeStyle = 'rgba(186, 230, 253, 0.45)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    for (let r of rainDrops) {
+      ctx.moveTo(r.x, r.y);
+      ctx.lineTo(r.x - 3, r.y + r.l);
+      r.y += r.v;
+      r.x -= 1.5;
+      if (r.y > 480) {
+        r.y = 0;
+        r.x = Math.random() * 800;
+        if (Math.random() < 0.2) {
+          puddles.push({ x: r.x, y: 450 + Math.random() * 25, r: 2, alpha: 0.6 });
+        }
+      }
+    }
+    ctx.stroke();
+
+    for (let i = puddles.length - 1; i >= 0; i--) {
+      const p = puddles[i];
+      ctx.strokeStyle = `rgba(186, 230, 253, ${p.alpha})`;
+      ctx.beginPath();
+      ctx.ellipse(p.x, p.y, p.r * 2, p.r, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      p.r += 0.8;
+      p.alpha -= 0.05;
+      if (p.alpha <= 0) puddles.splice(i, 1);
+    }
+  }
 }
 
 function drawPlayerSprite() {
@@ -3562,6 +3904,29 @@ document.getElementById('btnCloseSettings').addEventListener('click', () => {
 
 document.getElementById('btnBattlePress').addEventListener('click', handleBattlePress);
 document.getElementById('btnBattlePresent').addEventListener('click', openEvidenceBag);
+
+
+document.getElementById('btnToggleWeather').addEventListener('click', () => {
+  isRaining = !isRaining;
+  document.getElementById('btnToggleWeather').textContent = isRaining ? '🌧 RAIN: ON' : '🌧 RAIN: OFF';
+  document.getElementById('btnToggleWeather').classList.toggle('active', isRaining);
+  document.getElementById('toggleWeatherSettingsBtn').textContent = isRaining ? 'ENABLED' : 'DISABLED';
+  AudioEngine.playBlip();
+});
+
+document.getElementById('toggleWeatherSettingsBtn').addEventListener('click', () => {
+  isRaining = !isRaining;
+  document.getElementById('btnToggleWeather').textContent = isRaining ? '🌧 RAIN: ON' : '🌧 RAIN: OFF';
+  document.getElementById('btnToggleWeather').classList.toggle('active', isRaining);
+  document.getElementById('toggleWeatherSettingsBtn').textContent = isRaining ? 'ENABLED' : 'DISABLED';
+  AudioEngine.playBlip();
+});
+
+document.getElementById('btnTouchSprint').addEventListener('click', () => {
+  isSprinting = !isSprinting;
+  document.getElementById('btnTouchSprint').classList.toggle('active', isSprinting);
+  AudioEngine.playBlip();
+});
 
 document.getElementById('btnToggleAudio').addEventListener('click', () => {
   AudioEngine.enabled = !AudioEngine.enabled;
