@@ -21,6 +21,7 @@
     justify-content: center;
     overflow: hidden;
     user-select: none;
+    touch-action: manipulation;
   }
 
   /* Main Viewport Container */
@@ -45,7 +46,7 @@
     z-index: 40;
     pointer-events: none;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
+                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
     background-size: 100% 3px, 6px 100%;
     display: block;
   }
@@ -69,7 +70,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s ease-in-out;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s ease-in-out;
     background: radial-gradient(circle at 18% 70%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
                 radial-gradient(circle at 75% 35%, rgba(220, 38, 38, 0.06) 0%, transparent 55%),
                 #0b080e;
@@ -108,12 +109,12 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 24px 20px;
+    padding: 20px 20px;
     pointer-events: none;
   }
 
   .title-brand {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -122,8 +123,8 @@
 
   .title-eyebrow {
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 14px;
-    letter-spacing: 12px;
+    font-size: 13px;
+    letter-spacing: 10px;
     color: #cbd5e1;
     text-transform: uppercase;
     margin-bottom: 4px;
@@ -141,7 +142,7 @@
   .word-last {
     font-family: 'Cinzel', Georgia, serif;
     font-weight: 900;
-    font-size: clamp(44px, 7.5vw, 80px);
+    font-size: clamp(40px, 7vw, 76px);
     letter-spacing: 6px;
     color: #f1f5f9;
     text-shadow: 0 0 20px rgba(0, 0, 0, 0.9), 2px 4px 15px rgba(0, 0, 0, 0.95);
@@ -157,7 +158,7 @@
   .word-objection {
     font-family: 'Cinzel', Georgia, serif;
     font-weight: 900;
-    font-size: clamp(34px, 6.2vw, 70px);
+    font-size: clamp(32px, 6vw, 66px);
     letter-spacing: 6px;
     color: #e2e8f0;
     text-shadow: 0 0 25px rgba(0,0,0,0.95), 3px 6px 18px rgba(0,0,0,0.9);
@@ -186,8 +187,8 @@
 
   .crosshair-target {
     position: absolute;
-    width: clamp(44px, 6.5vw, 72px);
-    height: clamp(44px, 6.5vw, 72px);
+    width: clamp(40px, 6vw, 68px);
+    height: clamp(40px, 6vw, 68px);
     border: 2px solid #ef4444;
     border-radius: 50%;
     box-shadow: 0 0 14px rgba(239, 68, 68, 0.75), inset 0 0 8px rgba(239, 68, 68, 0.5);
@@ -219,10 +220,10 @@
   }
 
   .title-tagline {
-    font-size: 13px;
+    font-size: 12px;
     color: #facc15;
     letter-spacing: 2px;
-    margin-top: 8px;
+    margin-top: 6px;
     text-transform: uppercase;
     font-weight: bold;
     text-shadow: 0 2px 8px rgba(0,0,0,0.8);
@@ -231,30 +232,30 @@
   .title-menu {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    width: 290px;
-    margin-top: 16px;
+    gap: 8px;
+    width: 280px;
+    margin-top: 14px;
     pointer-events: auto;
   }
 
   .menu-btn {
     position: relative;
-    background: rgba(22, 14, 28, 0.6);
+    background: rgba(22, 14, 28, 0.7);
     border: 1px solid #452414;
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 14px;
-    letter-spacing: 4px;
+    font-size: 13px;
+    letter-spacing: 3px;
     color: #cbd5e1;
-    padding: 9px 14px;
+    padding: 8px 12px;
     cursor: pointer;
     text-transform: uppercase;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
     border-radius: 4px;
   }
 
   .menu-btn:hover, .menu-btn.active {
     color: #ffffff;
-    background: rgba(69, 36, 20, 0.85);
+    background: rgba(69, 36, 20, 0.9);
     border-color: #ef4444;
     text-shadow: 0 0 10px #f87171;
     box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
@@ -268,23 +269,23 @@
   }
 
   .title-hint {
-    margin-top: 20px;
+    margin-top: 16px;
     font-size: 11px;
     color: #94a3b8;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
   }
 
   .sticky-note {
     position: absolute;
-    bottom: 30px;
-    left: 36px;
-    width: 170px;
+    bottom: 24px;
+    left: 28px;
+    width: 160px;
     background: #fef08a;
     color: #451a03;
-    padding: 12px 10px;
+    padding: 10px 8px;
     font-size: 11px;
-    line-height: 1.4;
+    line-height: 1.35;
     font-family: 'Courier Prime', monospace;
     font-style: italic;
     box-shadow: 2px 6px 16px rgba(0, 0, 0, 0.85);
@@ -300,7 +301,7 @@
     top: -8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 36px;
+    width: 32px;
     height: 12px;
     background: rgba(220, 38, 38, 0.85);
   }
@@ -321,8 +322,8 @@
     justify-content: space-between;
     background: #140d1a;
     border-bottom: 2px solid #3f2214;
-    padding: 6px 14px;
-    font-size: 12px;
+    padding: 6px 12px;
+    font-size: 11px;
     z-index: 20;
     gap: 8px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.7);
@@ -331,7 +332,8 @@
   .hud-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+    flex-wrap: wrap;
   }
 
   .hud-badge {
@@ -351,11 +353,11 @@
   .hud-quest {
     color: #cbd5e1;
     font-size: 11px;
-    background: rgba(15, 23, 42, 0.7);
-    padding: 3px 10px;
+    background: rgba(15, 23, 42, 0.75);
+    padding: 3px 8px;
     border-radius: 12px;
     border: 1px solid #334155;
-    max-width: 440px;
+    max-width: 400px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -375,7 +377,7 @@
     background: #2c161f;
     border: 1px solid #6c2e0b;
     color: #fef08a;
-    padding: 4px 10px;
+    padding: 4px 8px;
     border-radius: 4px;
     font-size: 11px;
     font-family: 'Cinzel', Georgia, serif;
@@ -384,7 +386,7 @@
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
   }
 
   .hud-btn:hover {
@@ -402,6 +404,7 @@
     font-size: 10px;
   }
 
+  /* Canvas Stage */
   .canvas-stage {
     position: relative;
     flex: 1;
@@ -410,6 +413,7 @@
     justify-content: center;
     background: #060408;
     overflow: hidden;
+    cursor: crosshair;
   }
 
   #mainCanvas {
@@ -420,11 +424,12 @@
     image-rendering: crisp-edges;
     max-width: 100%;
     max-height: 100%;
+    outline: none;
   }
 
   #location-banner {
     position: absolute;
-    top: 20px;
+    top: 14px;
     left: 50%;
     transform: translateX(-50%);
     background: rgba(14, 9, 20, 0.92);
@@ -432,9 +437,9 @@
     color: #fef08a;
     font-family: 'Cinzel', Georgia, serif;
     font-weight: bold;
-    font-size: 15px;
-    letter-spacing: 4px;
-    padding: 6px 24px;
+    font-size: 14px;
+    letter-spacing: 3px;
+    padding: 5px 20px;
     border-radius: 6px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.8);
     opacity: 0;
@@ -448,20 +453,35 @@
     transform: translateX(-50%) translateY(5px);
   }
 
-  /* Pokemon Red Bottom Dialogue Box */
+  /* Tap ripple circle */
+  .tap-ripple {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #facc15;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+    transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+    z-index: 30;
+  }
+
+  /* Dialogue Box */
   .pokemon-dialogue-pane {
     position: relative;
     width: 100%;
-    min-height: 110px;
-    max-height: 130px;
+    min-height: 90px;
+    max-height: 110px;
     background: #140d08;
     border-top: 3px solid #78350f;
-    padding: 10px 18px;
+    padding: 8px 16px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     box-shadow: inset 0 2px 12px rgba(0,0,0,0.8);
     z-index: 20;
+    cursor: pointer;
   }
 
   .dialogue-header-line {
@@ -469,15 +489,15 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px dashed #522d14;
-    padding-bottom: 4px;
-    margin-bottom: 6px;
+    padding-bottom: 3px;
+    margin-bottom: 4px;
   }
 
   .dialogue-speaker-name {
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.2px;
     color: #facc15;
     text-transform: uppercase;
   }
@@ -489,8 +509,8 @@
   }
 
   .dialogue-text-body {
-    font-size: 14px;
-    line-height: 1.45;
+    font-size: 13px;
+    line-height: 1.4;
     color: #fef3c7;
     flex: 1;
     font-weight: 500;
@@ -498,20 +518,20 @@
 
   .dialogue-caret {
     align-self: flex-end;
-    font-size: 12px;
+    font-size: 11px;
     color: #f59e0b;
     animation: bounceCaret 0.8s infinite alternate;
   }
 
   @keyframes bounceCaret {
     0% { transform: translateY(0); }
-    100% { transform: translateY(4px); }
+    100% { transform: translateY(3px); }
   }
 
   .dialogue-choices {
     display: none;
     gap: 8px;
-    margin-top: 6px;
+    margin-top: 4px;
   }
 
   .dialogue-choices.active {
@@ -523,54 +543,56 @@
     border: 1px solid #b45309;
     color: #fef08a;
     font-family: inherit;
-    font-size: 12px;
-    padding: 5px 12px;
+    font-size: 11px;
+    padding: 4px 10px;
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
-    transition: all 0.2s;
   }
 
   .choice-btn:hover {
     background: #6c2e0b;
     border-color: #fde047;
     color: #ffffff;
-    box-shadow: 0 0 8px rgba(253, 224, 71, 0.4);
   }
 
-  /* Mobile Touch D-Pad */
+  /* Universal Controller Panel (D-Pad + Actions) */
   .touch-dpad-bar {
-    display: none;
+    display: flex;
     background: #110915;
-    border-top: 1px solid #3d2112;
-    padding: 6px 12px;
+    border-top: 2px solid #3d2112;
+    padding: 6px 14px;
     justify-content: space-between;
     align-items: center;
     z-index: 22;
   }
 
-  @media (max-width: 768px) {
-    .touch-dpad-bar { display: flex; }
-  }
-
   .dpad-grid {
     display: grid;
-    grid-template-columns: repeat(3, 38px);
-    grid-template-rows: repeat(3, 36px);
-    gap: 2px;
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 34px);
+    gap: 3px;
   }
 
   .dpad-btn {
-    background: #2c1a2e;
-    border: 1px solid #57314d;
+    background: #28172c;
+    border: 1px solid #6b315c;
     color: #fef08a;
     font-weight: bold;
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 13px;
     user-select: none;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .dpad-btn:active, .dpad-btn.pressed {
+    background: #6d2050;
+    color: #ffffff;
+    box-shadow: 0 0 6px #f43f5e;
   }
 
   .touch-actions {
@@ -579,15 +601,21 @@
   }
 
   .touch-act-btn {
-    width: 60px;
-    height: 48px;
+    padding: 8px 12px;
     background: #452414;
     border: 2px solid #92400e;
     color: #fde047;
     border-radius: 6px;
     font-family: 'Cinzel', Georgia, serif;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 11px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .touch-act-btn:active {
+    background: #78350f;
+    color: #ffffff;
   }
 
   /* ================= MODALS ================= */
@@ -595,12 +623,12 @@
     position: absolute;
     inset: 0;
     z-index: 70;
-    background: rgba(6, 4, 10, 0.9);
+    background: rgba(6, 4, 10, 0.92);
     backdrop-filter: blur(4px);
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 16px;
   }
 
   .game-modal-overlay.open {
@@ -623,7 +651,7 @@
   .modal-topbar {
     background: #241411;
     border-bottom: 2px solid #633215;
-    padding: 10px 18px;
+    padding: 10px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -631,7 +659,7 @@
 
   .modal-headline {
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 16px;
+    font-size: 15px;
     letter-spacing: 2px;
     color: #facc15;
     font-weight: bold;
@@ -650,7 +678,7 @@
   .modal-close-x:hover { color: #f87171; }
 
   .modal-inner-scroll {
-    padding: 16px 20px;
+    padding: 14px 18px;
     overflow-y: auto;
     flex: 1;
   }
@@ -659,7 +687,7 @@
   .bag-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
-    gap: 16px;
+    gap: 14px;
   }
 
   @media (max-width: 650px) {
@@ -670,7 +698,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 480px;
+    max-height: 440px;
     overflow-y: auto;
     padding-right: 6px;
   }
@@ -700,15 +728,15 @@
   }
 
   .clue-icon-box {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     background: #0f0914;
     border: 1px solid #6b21a8;
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .clue-meta-col {
@@ -735,7 +763,7 @@
     background: #110b17;
     border: 2px solid #573322;
     border-radius: 6px;
-    padding: 16px;
+    padding: 14px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -744,12 +772,12 @@
   .inspect-clue-header {
     border-bottom: 1px solid #3d2112;
     padding-bottom: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .inspect-title {
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 16px;
+    font-size: 15px;
     color: #fde047;
     font-weight: bold;
   }
@@ -757,34 +785,34 @@
   .inspect-loc {
     font-size: 11px;
     color: #94a3b8;
-    margin-top: 4px;
+    margin-top: 3px;
   }
 
   .inspect-body-text {
     font-size: 13px;
-    line-height: 1.6;
+    line-height: 1.55;
     color: #e2e8f0;
     flex: 1;
   }
 
   .inspect-significance {
-    margin-top: 14px;
+    margin-top: 12px;
     background: rgba(120, 53, 15, 0.25);
     border-left: 3px solid #f59e0b;
-    padding: 8px 12px;
+    padding: 8px 10px;
     font-size: 12px;
     color: #fef08a;
   }
 
   .btn-present-clue {
-    margin-top: 14px;
-    padding: 10px;
+    margin-top: 12px;
+    padding: 9px;
     background: #b91c1c;
     border: 1px solid #f87171;
     color: #ffffff;
     font-family: 'Cinzel', Georgia, serif;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 12px;
     letter-spacing: 2px;
     cursor: pointer;
     border-radius: 4px;
@@ -805,8 +833,8 @@
   .town-map-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 10px;
+    gap: 10px;
+    margin-top: 8px;
   }
 
   @media (max-width: 650px) {
@@ -817,12 +845,12 @@
     background: #1c1322;
     border: 2px solid #57311c;
     border-radius: 6px;
-    padding: 12px;
+    padding: 10px;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 5px;
   }
 
   .map-loc-card:hover {
@@ -839,7 +867,7 @@
 
   .map-loc-title {
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
     color: #fde047;
     display: flex;
@@ -850,14 +878,14 @@
   .map-loc-desc {
     font-size: 11px;
     color: #cbd5e1;
-    line-height: 1.4;
+    line-height: 1.35;
   }
 
   .map-loc-status {
     font-size: 10px;
     font-weight: bold;
     color: #4ade80;
-    margin-top: 4px;
+    margin-top: 3px;
   }
 
   /* ================= COURTROOM BATTLE ================= */
@@ -878,7 +906,7 @@
   .battle-header-bar {
     background: #190e21;
     border-bottom: 2px solid #7c2d12;
-    padding: 8px 16px;
+    padding: 6px 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -888,7 +916,7 @@
   .trial-title-tag {
     font-family: 'Cinzel', Georgia, serif;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 13px;
     color: #facc15;
     letter-spacing: 1px;
   }
@@ -896,19 +924,19 @@
   .credibility-wrap {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
   .credibility-label {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: bold;
     letter-spacing: 1px;
     color: #e2e8f0;
   }
 
   .credibility-bar-track {
-    width: 220px;
-    height: 16px;
+    width: 180px;
+    height: 14px;
     background: #2b1219;
     border: 1px solid #7f1d1d;
     border-radius: 8px;
@@ -931,7 +959,7 @@
     justify-content: space-around;
     background: radial-gradient(circle at 50% 30%, #1e1329 0%, #08050e 85%);
     overflow: hidden;
-    padding: 10px;
+    padding: 8px;
   }
 
   .bench-actor-side {
@@ -939,12 +967,12 @@
     flex-direction: column;
     align-items: center;
     z-index: 5;
-    width: 280px;
+    width: 260px;
   }
 
   .actor-portrait-card {
-    width: 160px;
-    height: 160px;
+    width: 150px;
+    height: 150px;
     border: 3px solid #854d0e;
     background: #140d1c;
     border-radius: 8px;
@@ -957,14 +985,14 @@
   }
 
   .actor-name-banner {
-    margin-top: 8px;
+    margin-top: 6px;
     font-family: 'Cinzel', Georgia, serif;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 12px;
     letter-spacing: 1px;
     color: #fef08a;
     background: rgba(30, 16, 26, 0.9);
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 4px;
     border: 1px solid #573124;
   }
@@ -977,8 +1005,8 @@
   }
 
   .podium-furniture {
-    width: 220px;
-    height: 48px;
+    width: 200px;
+    height: 44px;
     background: #3f1a08;
     border: 2px solid #78350f;
     border-radius: 4px;
@@ -989,7 +1017,7 @@
 
   .judge-center-dias {
     position: absolute;
-    top: 14px;
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -999,8 +1027,8 @@
   }
 
   .judge-mini-portrait {
-    width: 90px;
-    height: 90px;
+    width: 80px;
+    height: 80px;
     background: #130a1c;
     border: 2px solid #ca8a04;
     border-radius: 6px;
@@ -1012,10 +1040,10 @@
 
   .judge-name-pill {
     font-family: 'Cinzel', Georgia, serif;
-    font-size: 11px;
+    font-size: 10px;
     color: #facc15;
     font-weight: bold;
-    margin-top: 4px;
+    margin-top: 3px;
     letter-spacing: 1px;
   }
 
@@ -1040,9 +1068,9 @@
     color: #ffffff;
     font-family: 'Cinzel', Georgia, serif;
     font-weight: 900;
-    font-size: clamp(38px, 8vw, 76px);
-    letter-spacing: 6px;
-    padding: 14px 40px;
+    font-size: clamp(34px, 7vw, 70px);
+    letter-spacing: 5px;
+    padding: 12px 36px;
     border: 4px solid #fef08a;
     border-radius: 12px;
     box-shadow: 0 0 50px #ef4444, inset 0 0 20px #7f1d1d;
@@ -1060,10 +1088,10 @@
   .battle-bottom-pane {
     background: #160c07;
     border-top: 3px solid #78350f;
-    padding: 12px 18px;
+    padding: 10px 16px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     z-index: 10;
   }
 
@@ -1071,17 +1099,17 @@
     background: #20120b;
     border: 1px solid #57311c;
     border-radius: 4px;
-    padding: 10px 14px;
-    min-height: 58px;
-    font-size: 14px;
-    line-height: 1.45;
+    padding: 8px 12px;
+    min-height: 52px;
+    font-size: 13px;
+    line-height: 1.4;
     color: #fef3c7;
     font-weight: 500;
   }
 
   .battle-actions-row {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     justify-content: flex-end;
   }
 
@@ -1091,8 +1119,8 @@
     color: #fef08a;
     font-family: 'Cinzel', Georgia, serif;
     font-weight: bold;
-    font-size: 13px;
-    padding: 8px 18px;
+    font-size: 12px;
+    padding: 7px 16px;
     border-radius: 4px;
     cursor: pointer;
     letter-spacing: 1px;
@@ -1103,7 +1131,6 @@
     background: #5c2409;
     border-color: #fde047;
     box-shadow: 0 0 10px rgba(253, 224, 71, 0.4);
-    transform: translateY(-1px);
   }
 
   .battle-btn.present-red {
@@ -1125,7 +1152,7 @@
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 20px;
   }
 
   #verdict-modal.show {
@@ -1136,24 +1163,24 @@
     background: #170d1a;
     border: 3px solid #78350f;
     border-radius: 8px;
-    max-width: 600px;
+    max-width: 580px;
     width: 100%;
-    padding: 28px 24px;
+    padding: 24px 20px;
     text-align: center;
     box-shadow: 0 20px 60px rgba(0,0,0,0.95);
   }
 
   .verdict-gavel-icon {
-    font-size: 44px;
-    margin-bottom: 12px;
+    font-size: 40px;
+    margin-bottom: 10px;
   }
 
   .verdict-stamp {
     font-family: 'Cinzel', Georgia, serif;
     font-weight: 900;
-    font-size: 26px;
+    font-size: 24px;
     letter-spacing: 3px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     text-transform: uppercase;
   }
 
@@ -1168,21 +1195,21 @@
   }
 
   .verdict-story-p {
-    font-size: 14px;
-    line-height: 1.6;
+    font-size: 13px;
+    line-height: 1.55;
     color: #e2e8f0;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     text-align: left;
   }
 
   .verdict-action-btn {
-    padding: 10px 24px;
+    padding: 9px 22px;
     background: #78350f;
     border: 1px solid #fde047;
     color: #fef08a;
     font-family: 'Cinzel', Georgia, serif;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 2px;
     cursor: pointer;
     border-radius: 4px;
@@ -1237,13 +1264,14 @@
       </div>
 
       <div class="title-hint">
-        Navigate: <b>WASD / Arrow Keys</b> · Select: <b>[ENTER] or [SPACE]</b>
+        Navigate: <b>WASD / Arrow Keys / Click</b> · Select: <b>[ENTER] or [SPACE]</b>
       </div>
     </div>
   </div>
 
-  <!-- MAIN IN-GAME APPLICATION -->
+  <!-- IN-GAME APPLICATION -->
   <div id="game-app">
+    <!-- Top HUD Navigation Bar -->
     <div class="top-hud">
       <div class="hud-left">
         <div class="hud-badge" id="hudLocationBadge">📍 VANCE LAW OFFICES</div>
@@ -1265,16 +1293,17 @@
       </div>
     </div>
 
-    <div class="canvas-stage">
+    <!-- Main Game Canvas Stage -->
+    <div class="canvas-stage" id="canvasStage">
       <div id="location-banner">VANCE LAW OFFICES</div>
-      <canvas id="mainCanvas" width="800" height="480"></canvas>
+      <canvas id="mainCanvas" width="800" height="480" tabindex="0"></canvas>
     </div>
 
     <!-- Bottom Pokemon Red Style Dialogue Box -->
-    <div class="pokemon-dialogue-pane">
+    <div class="pokemon-dialogue-pane" id="dialoguePane">
       <div class="dialogue-header-line">
         <span class="dialogue-speaker-name" id="speakerLabel">JUSTIN VANCE (DEFENSE COUNSEL)</span>
-        <span class="dialogue-sub-hint">[SPACE] or [E] Advance · [B] Bag · [M] Map</span>
+        <span class="dialogue-sub-hint">[CLICK / SPACE] Advance · [B] Bag · [M] Map</span>
       </div>
       <div class="dialogue-text-body" id="dialogueText">
         My father, Judge Lawrence Vance, was killed inside the hospital's MRI scanner... Dr. Aris is accused, but my father trusted him for decades. I need to find the truth before the trial begins.
@@ -1283,23 +1312,23 @@
       <div class="dialogue-caret">▼</div>
     </div>
 
-    <!-- Mobile Touch Controls -->
+    <!-- Universal Virtual Controller (Always Ready for Mouse & Touch) -->
     <div class="touch-dpad-bar">
       <div class="dpad-grid">
         <div></div>
-        <button class="dpad-btn" id="btnDpadUp">▲</button>
+        <button class="dpad-btn" id="btnDpadUp">▲ UP</button>
         <div></div>
-        <button class="dpad-btn" id="btnDpadLeft">◀</button>
+        <button class="dpad-btn" id="btnDpadLeft">◀ LEFT</button>
         <div></div>
-        <button class="dpad-btn" id="btnDpadRight">▶</button>
+        <button class="dpad-btn" id="btnDpadRight">▶ RIGHT</button>
         <div></div>
-        <button class="dpad-btn" id="btnDpadDown">▼</button>
+        <button class="dpad-btn" id="btnDpadDown">▼ DOWN</button>
         <div></div>
       </div>
       <div class="touch-actions">
-        <button class="touch-act-btn" id="btnTouchInteract">A: EXAM</button>
-        <button class="touch-act-btn" id="btnTouchBag">B: BAG</button>
-        <button class="touch-act-btn" id="btnTouchMap">M: MAP</button>
+        <button class="touch-act-btn" id="btnTouchInteract">A: EXAMINE</button>
+        <button class="touch-act-btn" id="btnTouchBag">B: EVIDENCE</button>
+        <button class="touch-act-btn" id="btnTouchMap">M: TOWN MAP</button>
       </div>
     </div>
   </div>
@@ -1342,8 +1371,8 @@
         <div class="modal-close-x" id="btnCloseMap">✕</div>
       </div>
       <div class="modal-inner-scroll">
-        <p style="font-size:12px; color:#cbd5e1; margin-bottom:10px;">
-          Select a verified destination to fast-travel immediately or consult local coordinates:
+        <p style="font-size:12px; color:#cbd5e1; margin-bottom:8px;">
+          Select a verified destination to fast-travel immediately or navigate via the city streets:
         </p>
         <div class="town-map-grid" id="townMapGrid"></div>
       </div>
@@ -1437,7 +1466,13 @@
 </div>
 
 <script>
-// ==================== AUDIO ENGINE ====================
+
+// ==================== GLOBAL STATE ====================
+let gameState = 'title'; // 'title' | 'playing' | 'court_battle'
+let targetMove = null;
+let clickRipple = null;
+
+// ==================== AUDIO SYNTHESIZER ====================
 const AudioEngine = {
   ctx: null,
   enabled: true,
@@ -1992,7 +2027,7 @@ const judgePalette = {
 };
 
 function renderSprite(ctx, spriteRows, px, py, palette, scale = 2, flipX = false) {
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
   ctx.beginPath();
   ctx.ellipse(px + 8 * scale, py + 15 * scale, 6 * scale, 3 * scale, 0, 0, Math.PI * 2);
   ctx.fill();
@@ -2161,9 +2196,7 @@ function drawTile(ctx, type, x, y) {
       ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
   }
 }
-</script>
 
-<script>
 // ==================== MAPS & WORLD DATA ====================
 const worldMaps = {
   office: {
@@ -2447,7 +2480,10 @@ function buildMapGrids() {
   }
 }
 
-// ==================== EVIDENCE & INVENTORY ====================
+// BUILD MAPS IMMEDIATELY AT PARSE TIME!
+buildMapGrids();
+
+// ==================== EVIDENCE DOSSIER ====================
 const allClues = {
   mercer_dossier: {
     id: 'mercer_dossier',
@@ -2637,7 +2673,7 @@ function renderTownMap() {
   grid.innerHTML = '';
 
   const locations = [
-    { mapId: 'office', name: 'Vance Law Offices', desc: 'Home base and Father\'s archive library.', unlocked: true },
+    { mapId: 'office', name: 'Vance Law Offices', desc: "Home base and Father's archive library.", unlocked: true },
     { mapId: 'hospital', name: 'Memorial Hospital', desc: 'High-field MRI Radiology Center & Coroner records.', unlocked: true },
     { mapId: 'clinic', name: 'Dr. Aris Dental Practice', desc: 'Consultation room and CCTV DVR console.', unlocked: true },
     { mapId: 'atm_kiosk', name: 'Commercial Bank & ATM', desc: 'External camera overlooking the dental clinic alley.', unlocked: true },
@@ -2674,43 +2710,51 @@ function closeTownMap() {
   document.getElementById('modalTownMap').classList.remove('open');
 }
 
-// ==================== COURTROOM BATTLE ENGINE ====================
+// ==================== COURTROOM BATTLE ====================
 const battlePhases = [
   {
     phase: 1,
     tag: "PHASE 1 OF 4 · THE MURDER WEAPON",
-    testimony: 'Kaizen: "The facts are indisputable! Dr. Aris committed second-degree murder by installing an iron tooth, fully aware the Judge had an annual MRI scheduled. It was deliberate medical homicide!"',
+    testimony: `Kaizen: "The facts are indisputable! Dr. Aris committed second-degree murder by installing an iron tooth, fully aware the Judge had an annual MRI scheduled. It was deliberate medical homicide!"`,
     contradictionClues: ['dentist_invoice', 'mri_report'],
-    pressDialogue: 'Justin: "Dr. Aris has treated my father for 25 years with flawless care. Why would he suddenly use iron?"\nKaizen: "Greed or madness, counsel! He ordered the materials, he holds the scalpel!"',
-    correctDialogue: 'OBJECTION!\nJustin: "Dr. Aris never stocked, ordered, or touched pure iron! His verified supplier invoice from Zurich Biomaterials proves he ordered medical-grade Palladium-100! The iron tooth was a foreign replacement planted by an intruder!"',
-    kaizenBreakdownReaction: 'Kaizen: "T-Tch! So what if he ordered palladium? That doesn\'t prove someone else broke in!"'
+    pressDialogue: `Justin: "Dr. Aris treated my father for 25 years with devotion! Why would he use iron?"
+Kaizen: "Greed or malice, counsel! He ordered the materials!"`,
+    correctDialogue: `OBJECTION!
+Justin: "Dr. Aris never ordered iron! Zurich Biomaterials records prove he ordered medical Palladium-100! The iron tooth was an alien substitution!"`,
+    kaizenBreakdownReaction: `Kaizen: "T-Tch! So what if he ordered palladium? That does not prove someone else broke in!"`
   },
   {
     phase: 2,
     tag: "PHASE 2 OF 4 · THE SECURITY FOOTAGE",
-    testimony: 'Kaizen: "An intruder? Preposterous! The dental clinic\'s state-of-the-art security cameras operated all night. Nobody entered through any door! Only Dr. Aris had physical access to the dental vault!"',
+    testimony: `Kaizen: "An intruder? Preposterous! The clinic cameras operated all night. Nobody entered! Only Dr. Aris had physical access to the dental vault!"`,
     contradictionClues: ['clinic_cctv', 'atm_footage'],
-    pressDialogue: 'Justin: "Have digital forensics reviewed the raw clinic video stream?"\nKaizen: "The tape speaks for itself! No one entered the clinic premises that night!"',
-    correctDialogue: 'OBJECTION!\nJustin: "The clinic\'s DVR was hacked into a 4-minute continuous loop between 3:10 and 3:30 AM! And across the alleyway, the commercial bank\'s ATM camera captured an unmarked black sedan idling at 3:15 AM as a hooded thief entered the rear door! License plate: #7X-904!"',
-    kaizenBreakdownReaction: 'Kaizen: "N-No! The ATM camera was supposed to be offline for maintenance... I mean, that plate proves nothing!"'
+    pressDialogue: `Justin: "Has digital forensics reviewed the raw clinic video feed?"
+Kaizen: "The tape speaks for itself! No one entered the clinic premises that night!"`,
+    correctDialogue: `OBJECTION!
+Justin: "The clinic DVR was hacked into a 4-minute continuous loop! And the bank ATM camera caught the burglar's black sedan (#7X-904) in the alley at 3:15 AM!"`,
+    kaizenBreakdownReaction: `Kaizen: "N-No! The ATM camera was supposed to be offline... I mean, that plate proves nothing!"`
   },
   {
     phase: 3,
     tag: "PHASE 3 OF 4 · THE PHYSICAL IMPLANT",
-    testimony: 'Kaizen: "Even if a phantom burglar broke into the clinic, where is the supposed palladium tooth? Dr. Aris fabricated that entire story after he botched the surgery!"',
+    testimony: `Kaizen: "Even if a phantom burglar broke into the clinic, where is the supposed palladium tooth? The dentist fabricated that entire story!"`,
     contradictionClues: ['stolen_tooth'],
-    pressDialogue: 'Justin: "If my father had palladium in his jaw, it wouldn\'t have reacted to the 3.0 Tesla magnet!"\nKaizen: "Because the dentist never put palladium in! He kept the money and used cheap iron!"',
-    correctDialogue: 'TAKE THAT!\nJustin: "Here is the real palladium crown! Recovered from the burglar\'s safehouse, bearing Dr. Aris\'s microscopic serial stamp #P-992! The burglar stole this tooth before surgery and placed the iron replica in the clinic safe!"',
-    kaizenBreakdownReaction: 'Kaizen: "G-GAAAH! You found the strongbox?! But that warehouse was supposed to be scrubbed clean!"'
+    pressDialogue: `Justin: "If my father had palladium, it would not have reacted to the 3T magnet!"
+Kaizen: "Because the dentist never installed palladium!"`,
+    correctDialogue: `TAKE THAT!
+Justin: "Here is the real palladium crown! Stamped with Dr. Aris's serial #P-992, recovered from the burglar's safehouse!"`,
+    kaizenBreakdownReaction: `Kaizen: "G-GAAAH! You found the strongbox?! That warehouse was supposed to be scrubbed clean!"`
   },
   {
     phase: 4,
     tag: "PHASE 4 OF 4 · THE TRUE MASTERMIND & MOTIVE",
-    testimony: 'Kaizen: "A burglar stole it? Then go prosecute the burglar! He was found dead of cyanide poisoning anyway! You have zero evidence linking ANYONE in this courtroom to that theft!"',
+    testimony: `Kaizen: "A burglar stole it? Then prosecute the dead burglar! You have zero evidence linking ANYONE in this courtroom to that theft!"`,
     contradictionClues: ['wire_receipt', 'mercer_dossier'],
-    pressDialogue: 'Justin: "Who funded the burglar? An orphan thief doesn\'t execute complex biomedical assassinations without a client!"\nKaizen: "That\'s pure speculation! You can\'t connect me to this!"',
-    correctDialogue: 'HOLD IT!\nJustin: "We recovered this bank transfer slip from the burglar\'s desk! A $250,000 wire sent directly from YOUR legal escrow account: KAIZEN MERCER! With the memo: \'Swap the tooth and vanish!\' And you poisoned him with cyanide when he finished the job! Your motive? My father ruined your career and disbarred you for forgery in State v. Mercer!"',
-    kaizenBreakdownReaction: 'Kaizen: "CURSE YOU, VANCE! HE DESTROYED MY ENTIRE FUTURE! HE DESERVED TO DIE IN THAT SCANNER! I CRAFTED THE PERFECT MURDER... HOW COULD YOU PIECE IT TOGETHER?!"'
+    pressDialogue: `Justin: "Who funded the burglar? An orphan thief doesn't execute complex bio-assassinations without a client!"
+Kaizen: "That is pure speculation!"`,
+    correctDialogue: `HOLD IT!
+Justin: "We found this $250,000 wire transfer slip from YOUR private legal escrow to the deceased burglar! Memo: 'Swap the tooth and vanish!' And you poisoned him with cyanide! Your motive? My father ruined your career and disbarred you in State v. Mercer!"`,
+    kaizenBreakdownReaction: `Kaizen: "CURSE YOU, VANCE! HE DESTROYED MY ENTIRE FUTURE! HE DESERVED TO DIE IN THAT SCANNER! I CRAFTED THE PERFECT MURDER... HOW COULD YOU PIECE IT TOGETHER?!"`
   }
 ];
 
@@ -2805,7 +2849,7 @@ function handleEvidencePresentation(clueId) {
     updateBattleUI();
 
     document.getElementById('testimonyTextDisplay').textContent =
-      `Chief Justice Sterling: "Counsel Vance! That evidence has no bearing on the prosecutor's claim! Do not waste this court's time!" (-25% Credibility)`;
+      `Chief Justice Sterling: "Counsel Vance! That evidence has no bearing on this claim!" (-25% Credibility)`;
 
     if (battleState.credibility <= 0) {
       setTimeout(() => {
@@ -2857,11 +2901,8 @@ function triggerDefeatEnding() {
 
   modal.classList.add('show');
 }
-</script>
 
-<script>
-// ==================== ENGINE & MAIN CONTROLLER ====================
-let gameState = 'title'; // 'title' | 'playing' | 'court_battle'
+// ==================== ENGINE, PLAYER & CONTROLS ====================
 let currentMap = worldMaps.office;
 
 const canvas = document.getElementById('mainCanvas');
@@ -2875,7 +2916,7 @@ const player = {
   y: 7 * TILE_SIZE,
   w: 26,
   h: 28,
-  speed: 3.2,
+  speed: 3.5,
   facing: 'down',
   walkFrame: 0,
   isMoving: false
@@ -2890,9 +2931,27 @@ const camera = {
 
 const keys = {};
 
+// Canvas Click / Tap to Move
+canvas.addEventListener('pointerdown', (e) => {
+  if (gameState !== 'playing') return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const clickCanvasX = (e.clientX - rect.left) * scaleX;
+  const clickCanvasY = (e.clientY - rect.top) * scaleY;
+  const clickWorldX = clickCanvasX + camera.x;
+  const clickWorldY = clickCanvasY + camera.y;
+
+  targetMove = { x: clickWorldX, y: clickWorldY };
+  clickRipple = { x: clickCanvasX, y: clickCanvasY, r: 6, alpha: 1.0 };
+  AudioEngine.playBlip();
+});
+
+// Universal Keyboard Listener
 window.addEventListener('keydown', (e) => {
   const k = e.key.toLowerCase();
   keys[k] = true;
+  targetMove = null; // Clear click-to-move when key is pressed
 
   if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(k)) {
     e.preventDefault();
@@ -2922,6 +2981,42 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
   keys[e.key.toLowerCase()] = false;
 });
+
+// Bind Universal D-Pad Buttons
+function bindDpad(btnId, keyName) {
+  const el = document.getElementById(btnId);
+  if (!el) return;
+  const press = (e) => {
+    e.preventDefault();
+    keys[keyName] = true;
+    targetMove = null;
+    el.classList.add('pressed');
+  };
+  const release = (e) => {
+    e.preventDefault();
+    keys[keyName] = false;
+    el.classList.remove('pressed');
+  };
+
+  el.addEventListener('pointerdown', press);
+  el.addEventListener('pointerup', release);
+  el.addEventListener('pointerleave', release);
+  el.addEventListener('mousedown', press);
+  el.addEventListener('mouseup', release);
+  el.addEventListener('touchstart', press);
+  el.addEventListener('touchend', release);
+}
+
+bindDpad('btnDpadUp', 'w');
+bindDpad('btnDpadDown', 's');
+bindDpad('btnDpadLeft', 'a');
+bindDpad('btnDpadRight', 'd');
+
+// Touch & Virtual Control Action Buttons
+document.getElementById('btnTouchInteract').addEventListener('click', interactWithWorld);
+document.getElementById('btnTouchBag').addEventListener('click', openEvidenceBag);
+document.getElementById('btnTouchMap').addEventListener('click', openTownMap);
+document.getElementById('dialoguePane').addEventListener('click', interactWithWorld);
 
 const titleMenuButtons = Array.from(document.querySelectorAll('#menuContainer .menu-btn'));
 let titleMenuIndex = 0;
@@ -2987,7 +3082,7 @@ function startNewGame() {
     );
 
     requestAnimationFrame(mainGameLoop);
-  }, 850);
+  }, 750);
 }
 
 function startCourtroomDirect() {
@@ -3029,6 +3124,7 @@ function warpToMap(mapId, startX, startY) {
   player.x = startX * TILE_SIZE;
   player.y = startY * TILE_SIZE;
   player.facing = 'down';
+  targetMove = null;
 
   AudioEngine.playWarp();
 
@@ -3093,9 +3189,9 @@ function checkWorldCollision(nx, ny) {
 }
 
 function interactWithWorld() {
-  const reach = 24;
-  let checkX = player.x;
-  let checkY = player.y;
+  const reach = 26;
+  let checkX = player.x + player.w / 2;
+  let checkY = player.y + player.h / 2;
 
   if (player.facing === 'up') checkY -= reach;
   else if (player.facing === 'down') checkY += reach;
@@ -3105,10 +3201,10 @@ function interactWithWorld() {
   const map = currentMap;
 
   for (let npc of map.npcs) {
-    const npx = npc.x * TILE_SIZE;
-    const npy = npc.y * TILE_SIZE;
+    const npx = npc.x * TILE_SIZE + 16;
+    const npy = npc.y * TILE_SIZE + 16;
     const dist = Math.hypot(checkX - npx, checkY - npy);
-    if (dist < 40) {
+    if (dist < 44) {
       AudioEngine.playBlip();
       showDialogue(npc.name, npc.text);
       if (npc.givesClue) acquireClue(npc.givesClue);
@@ -3122,7 +3218,7 @@ function interactWithWorld() {
     const pw = prop.w * TILE_SIZE;
     const ph = prop.h * TILE_SIZE;
 
-    if (checkX >= px - 16 && checkX <= px + pw + 16 && checkY >= py - 16 && checkY <= py + ph + 16) {
+    if (checkX >= px - 18 && checkX <= px + pw + 18 && checkY >= py - 18 && checkY <= py + ph + 18) {
       AudioEngine.playBlip();
       showDialogue(prop.name, prop.text);
       if (prop.givesClue) acquireClue(prop.givesClue);
@@ -3134,9 +3230,9 @@ function interactWithWorld() {
   }
 
   for (let warp of map.warps) {
-    const wx = warp.x * TILE_SIZE;
-    const wy = warp.y * TILE_SIZE;
-    if (Math.hypot(player.x - wx, player.y - wy) < 40) {
+    const wx = warp.x * TILE_SIZE + 16;
+    const wy = warp.y * TILE_SIZE + 16;
+    if (Math.hypot(player.x + 13 - wx, player.y + 14 - wy) < 40) {
       if (warp.reqClue && !allClues[warp.reqClue].unlocked) {
         showDialogue("LOCKED PERIMETER", "Police tape blocks the entrance. You need verified vehicle surveillance records to search this warehouse.");
         return;
@@ -3186,10 +3282,32 @@ function updatePlayerMovement() {
   let dx = 0;
   let dy = 0;
 
-  if (keys['arrowup'] || keys['w']) { dy -= 1; player.facing = 'up'; }
-  else if (keys['arrowdown'] || keys['s']) { dy += 1; player.facing = 'down'; }
-  if (keys['arrowleft'] || keys['a']) { dx -= 1; player.facing = 'left'; }
-  else if (keys['arrowright'] || keys['d']) { dx += 1; player.facing = 'right'; }
+  // 1. Keyboard & D-Pad
+  if (keys['arrowup'] || keys['w'] || keys['8']) { dy -= 1; player.facing = 'up'; }
+  else if (keys['arrowdown'] || keys['s'] || keys['2']) { dy += 1; player.facing = 'down'; }
+  if (keys['arrowleft'] || keys['a'] || keys['4']) { dx -= 1; player.facing = 'left'; }
+  else if (keys['arrowright'] || keys['d'] || keys['6']) { dx += 1; player.facing = 'right'; }
+
+  // 2. Click / Tap to Move Pathfinding
+  if (dx === 0 && dy === 0 && targetMove) {
+    const pCenterX = player.x + player.w / 2;
+    const pCenterY = player.y + player.h / 2;
+    const distX = targetMove.x - pCenterX;
+    const distY = targetMove.y - pCenterY;
+    const dist = Math.hypot(distX, distY);
+
+    if (dist > 8) {
+      dx = distX / dist;
+      dy = distY / dist;
+      if (Math.abs(distX) > Math.abs(distY)) {
+        player.facing = distX > 0 ? 'right' : 'left';
+      } else {
+        player.facing = distY > 0 ? 'down' : 'up';
+      }
+    } else {
+      targetMove = null;
+    }
+  }
 
   if (dx !== 0 && dy !== 0) {
     dx *= 0.7071;
@@ -3205,15 +3323,16 @@ function updatePlayerMovement() {
   if (!checkWorldCollision(player.x, nextY)) player.y = nextY;
 
   if (player.isMoving) {
-    player.walkFrame += 0.2;
+    player.walkFrame += 0.22;
   } else {
     player.walkFrame = 0;
   }
 
+  // Automatic Door Warp Check
   for (let warp of currentMap.warps) {
-    const wx = warp.x * TILE_SIZE;
-    const wy = warp.y * TILE_SIZE;
-    if (Math.hypot(player.x - wx, player.y - wy) < 18) {
+    const wx = warp.x * TILE_SIZE + 16;
+    const wy = warp.y * TILE_SIZE + 16;
+    if (Math.hypot(player.x + 13 - wx, player.y + 14 - wy) < 22) {
       if (warp.reqClue && !allClues[warp.reqClue].unlocked) {
         // Locked
       } else {
@@ -3223,6 +3342,7 @@ function updatePlayerMovement() {
     }
   }
 
+  // Camera Follow
   if (currentMap.id === 'overworld') {
     camera.x = Math.round(player.x + player.w / 2 - canvas.width / 2);
     camera.y = Math.round(player.y + player.h / 2 - canvas.height / 2);
@@ -3242,6 +3362,7 @@ function drawWorld() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const map = currentMap;
 
+  // 1. Draw Tiles
   for (let y = 0; y < map.h; y++) {
     for (let x = 0; x < map.w; x++) {
       const tileType = map.tiles[y][x];
@@ -3254,6 +3375,7 @@ function drawWorld() {
     }
   }
 
+  // 2. Draw Props
   for (let p of map.props) {
     const px = p.x * TILE_SIZE - camera.x;
     const py = p.y * TILE_SIZE - camera.y;
@@ -3330,6 +3452,7 @@ function drawWorld() {
     }
   }
 
+  // 3. Draw NPCs
   for (let npc of map.npcs) {
     const npx = npc.x * TILE_SIZE - camera.x;
     const npy = npc.y * TILE_SIZE - camera.y;
@@ -3337,7 +3460,7 @@ function drawWorld() {
     if (npc.sprite === 'dentist') {
       renderSprite(ctx, dentistSprite, npx, npy, dentistPalette, 2);
     } else if (npc.sprite === 'radiologist') {
-      renderSprite(ctx, radiologistSprite, radiologistPalette, 2);
+      renderSprite(ctx, radiologistSprite, npx, npy, radiologistPalette, 2);
     } else if (npc.sprite === 'detective') {
       renderSprite(ctx, detectiveSprite, detectivePalette, 2);
     } else if (npc.sprite === 'kaizen') {
@@ -3349,7 +3472,21 @@ function drawWorld() {
     }
   }
 
+  // 4. Draw Player Attorney Sprite & Floating "YOU ▼" Marker
   drawPlayerSprite();
+
+  // 5. Draw Tap Ripple Effect
+  if (clickRipple) {
+    ctx.strokeStyle = `rgba(250, 204, 21, ${clickRipple.alpha})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(clickRipple.x, clickRipple.y, clickRipple.r, 0, Math.PI * 2);
+    ctx.stroke();
+
+    clickRipple.r += 1.5;
+    clickRipple.alpha -= 0.05;
+    if (clickRipple.alpha <= 0) clickRipple = null;
+  }
 }
 
 function drawPlayerSprite() {
@@ -3379,6 +3516,21 @@ function drawPlayerSprite() {
   }
 
   renderSprite(ctx, lawyerSprites[spriteKey], px, py, lawyerPalette, 2, flip);
+
+  // Floating "YOU ▼" Indicator so character is 100% visible
+  const bounceY = Math.sin(Date.now() / 180) * 3;
+  ctx.fillStyle = '#facc15';
+  ctx.beginPath();
+  ctx.moveTo(px + 13, py - 4 + bounceY);
+  ctx.lineTo(px + 8, py - 11 + bounceY);
+  ctx.lineTo(px + 18, py - 11 + bounceY);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.font = 'bold 9px monospace';
+  ctx.fillStyle = '#fde047';
+  ctx.textAlign = 'center';
+  ctx.fillText('YOU', px + 13, py - 13 + bounceY);
 }
 
 function mainGameLoop() {
@@ -3389,20 +3541,7 @@ function mainGameLoop() {
   }
 }
 
-// Touch control bindings
-document.getElementById('btnDpadUp').addEventListener('touchstart', (e) => { e.preventDefault(); keys['w'] = true; });
-document.getElementById('btnDpadUp').addEventListener('touchend', (e) => { e.preventDefault(); keys['w'] = false; });
-document.getElementById('btnDpadDown').addEventListener('touchstart', (e) => { e.preventDefault(); keys['s'] = true; });
-document.getElementById('btnDpadDown').addEventListener('touchend', (e) => { e.preventDefault(); keys['s'] = false; });
-document.getElementById('btnDpadLeft').addEventListener('touchstart', (e) => { e.preventDefault(); keys['a'] = true; });
-document.getElementById('btnDpadLeft').addEventListener('touchend', (e) => { e.preventDefault(); keys['a'] = false; });
-document.getElementById('btnDpadRight').addEventListener('touchstart', (e) => { e.preventDefault(); keys['d'] = true; });
-document.getElementById('btnDpadRight').addEventListener('touchend', (e) => { e.preventDefault(); keys['d'] = false; });
-
-document.getElementById('btnTouchInteract').addEventListener('click', interactWithWorld);
-document.getElementById('btnTouchBag').addEventListener('click', openEvidenceBag);
-document.getElementById('btnTouchMap').addEventListener('click', openTownMap);
-
+// HUD Buttons
 document.getElementById('btnOpenBag').addEventListener('click', openEvidenceBag);
 document.getElementById('btnOpenMap').addEventListener('click', openTownMap);
 document.getElementById('btnReturnToTitle').addEventListener('click', returnToTitle);
@@ -3452,8 +3591,9 @@ function initTitleDust() {
 }
 
 function resizeTitleCanvas() {
-  titleCanvas.width = titleCanvas.parentElement.clientWidth;
-  titleCanvas.height = titleCanvas.parentElement.clientHeight;
+  if (!titleCanvas || !titleCanvas.parentElement) return;
+  titleCanvas.width = titleCanvas.parentElement.clientWidth || 1200;
+  titleCanvas.height = titleCanvas.parentElement.clientHeight || 800;
   initTitleDust();
 }
 window.addEventListener('resize', resizeTitleCanvas);
@@ -3541,12 +3681,13 @@ function titleScreenLoop() {
   }
 }
 
+// Window Load Init
 window.onload = function() {
-  buildMapGrids();
   resizeTitleCanvas();
   updateClueCounter();
   requestAnimationFrame(titleScreenLoop);
 };
+
 </script>
 </body>
 </html>
