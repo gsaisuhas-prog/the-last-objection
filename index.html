@@ -1980,13 +1980,15 @@ const AudioEngine = {
   currentTheme: null,
 
   init() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) this.ctx = new AudioCtx();
-    }
-    if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
-    }
+    try {
+      if (!this.ctx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) this.ctx = new AudioCtx();
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume().catch(() => {});
+      }
+    } catch(e) {}
   },
 
   playBlip() {
@@ -3525,9 +3527,9 @@ function showVerdict(isGuiltyOfKaizen) {
 const canvas = document.getElementById('mainCanvas');
 const ctx = canvas.getContext('2d');
 
-function warpToMap(mapId, targetX, targetY) {
+function warpToMap(mapId, targetX, targetY, force = false) {
   const now = Date.now();
-  if (now - lastWarpTime < 800) return;
+  if (!force && now - lastWarpTime < 800) return;
   lastWarpTime = now;
 
   if (worldMaps[mapId]) {
@@ -4058,9 +4060,13 @@ function setupDOMEvents() {
     btnNewGame.addEventListener('click', () => {
       AudioEngine.init();
       AudioEngine.playGavel();
-      document.getElementById('title-screen').style.display = 'none';
+      const titleEl = document.getElementById('title-screen');
+      const gameAppEl = document.getElementById('game-app');
+      if (titleEl) titleEl.style.display = 'none';
+      if (gameAppEl) gameAppEl.style.display = 'flex';
       gameState = 'playing';
-      warpToMap('office', 12, 7);
+      warpToMap('office', 12, 7, true);
+      drawWorld();
     });
   }
 
@@ -4068,9 +4074,13 @@ function setupDOMEvents() {
   if (btnContinue) {
     btnContinue.addEventListener('click', () => {
       AudioEngine.init();
-      document.getElementById('title-screen').style.display = 'none';
+      const titleEl = document.getElementById('title-screen');
+      const gameAppEl = document.getElementById('game-app');
+      if (titleEl) titleEl.style.display = 'none';
+      if (gameAppEl) gameAppEl.style.display = 'flex';
       gameState = 'playing';
-      warpToMap('office', 12, 7);
+      warpToMap('office', 12, 7, true);
+      drawWorld();
     });
   }
 
@@ -4085,7 +4095,10 @@ function setupDOMEvents() {
   if (btnTitleCourt) {
     btnTitleCourt.addEventListener('click', () => {
       AudioEngine.init();
-      document.getElementById('title-screen').style.display = 'none';
+      const titleEl = document.getElementById('title-screen');
+      const gameAppEl = document.getElementById('game-app');
+      if (titleEl) titleEl.style.display = 'none';
+      if (gameAppEl) gameAppEl.style.display = 'flex';
       startCourtroomBattle();
     });
   }
@@ -4128,7 +4141,10 @@ function setupDOMEvents() {
   if (btnTitleReturn) {
     btnTitleReturn.addEventListener('click', () => {
       AudioEngine.stopBgm();
-      document.getElementById('title-screen').style.display = 'flex';
+      const titleEl = document.getElementById('title-screen');
+      const gameAppEl = document.getElementById('game-app');
+      if (titleEl) titleEl.style.display = 'flex';
+      if (gameAppEl) gameAppEl.style.display = 'none';
       gameState = 'title';
       const courtOverlay = document.getElementById('court-battle-overlay');
       if (courtOverlay) courtOverlay.classList.remove('active');
