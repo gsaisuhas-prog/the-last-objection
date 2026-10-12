@@ -27,6 +27,21 @@
     touch-action: manipulation;
   }
 
+    /* Viewport Screen Shake Animation */
+  @keyframes screenShake {
+    0% { transform: translate(0, 0); }
+    15% { transform: translate(-6px, 4px); }
+    30% { transform: translate(6px, -4px); }
+    45% { transform: translate(-4px, -2px); }
+    60% { transform: translate(4px, 3px); }
+    75% { transform: translate(-2px, 1px); }
+    100% { transform: translate(0, 0); }
+  }
+
+  #viewport.shake {
+    animation: screenShake 0.4s ease-out;
+  }
+
   /* Main Viewport Container */
   #viewport {
     position: relative;
@@ -2898,6 +2913,7 @@ function acquireClue(clueId) {
   if (!allClues[clueId]) return;
   if (!allClues[clueId].unlocked) {
     allClues[clueId].unlocked = true;
+    saveGameProgress();
     AudioEngine.playFanfare();
     updateBagCount();
     renderCluesList();
@@ -3468,6 +3484,11 @@ function triggerObjectionSplash(text = "OBJECTION!") {
   AudioEngine.playGavel();
 
   const splash = document.getElementById('objection-splash');
+  const viewport = document.getElementById('viewport');
+  if (viewport) {
+    viewport.classList.add('shake');
+    setTimeout(() => viewport.classList.remove('shake'), 420);
+  }
   if (splash) {
     splash.textContent = text;
     splash.classList.add('show');
@@ -3499,6 +3520,11 @@ function evaluateEvidenceInCourt(clueId) {
     }, 3800);
   } else {
     AudioEngine.playDamage();
+    const vp = document.getElementById('viewport');
+    if (vp) {
+      vp.classList.add('shake');
+      setTimeout(() => vp.classList.remove('shake'), 420);
+    }
     battleState.credibility = Math.max(0, battleState.credibility - 35);
     updateBattlePhaseUI();
 
@@ -3570,6 +3596,7 @@ function warpToMap(mapId, targetX, targetY, force = false) {
     player.x = targetX * TILE_SIZE;
     player.y = targetY * TILE_SIZE;
     targetMove = null;
+    saveGameProgress();
 
     const badge = document.getElementById('hudLocationBadge');
     if (badge) badge.textContent = `📍 ${currentMap.name}`;
@@ -3737,8 +3764,9 @@ function updatePlayerMovement() {
     player.walkFrame += 0.18;
 
     const currentSpeed = (keys['shift'] || keys['sprint']) ? player.sprintSpeed : player.normalSpeed;
-    const nextX = player.x + dx * currentSpeed;
-    const nextY = player.y + dy * currentSpeed;
+    const norm = (dx !== 0 && dy !== 0) ? Math.SQRT1_2 : 1;
+    const nextX = player.x + dx * currentSpeed * norm;
+    const nextY = player.y + dy * currentSpeed * norm;
 
     if (!checkCollision(nextX, player.y)) {
       player.x = nextX;
@@ -3968,6 +3996,54 @@ function drawWorld() {
   const flipX = (player.facing === 'left');
   renderSprite(ctx, sprite, px, py, lawyerPalette, 2, flipX);
 
+  // 6. Draw floating interaction hint when near an interactable
+  const checkX = player.x + player.w / 2 + (player.facing === 'left' ? -28 : (player.facing === 'right' ? 28 : 0));
+  const checkY = player.y + player.h / 2 + (player.facing === 'up' ? -28 : (player.facing === 'down' ? 28 : 0));
+  let interactLabel = null;
+
+  for (let npc of map.npcs) {
+    const npx = npc.x * TILE_SIZE + 16;
+    const npy = npc.y * TILE_SIZE + 16;
+    if (Math.hypot(checkX - npx, checkY - npy) < 46) {
+      interactLabel = `[E] TALK TO ${npc.name.split(' ')[0]}`;
+      break;
+    }
+  }
+
+  if (!interactLabel) {
+    for (let prop of map.props) {
+      const px = prop.x * TILE_SIZE;
+      const py = prop.y * TILE_SIZE;
+      const pw = prop.w * TILE_SIZE;
+      const ph = prop.h * TILE_SIZE;
+      if (checkX >= px - 18 && checkX <= px + pw + 18 && checkY >= py - 18 && checkY <= py + ph + 18) {
+        interactLabel = prop.docId ? '[E] READ CASE FILE' : (prop.isExitDoor ? '[E] EXIT ROOM' : '[E] EXAMINE');
+        break;
+      }
+    }
+  }
+
+  if (interactLabel) {
+    const hintX = px + 13;
+    const hintY = py - 14;
+    ctx.save();
+    ctx.font = 'bold 10px monospace';
+    const textW = ctx.measureText(interactLabel).width;
+    ctx.fillStyle = 'rgba(17, 9, 21, 0.85)';
+    ctx.strokeStyle = '#facc15';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(hintX - textW / 2 - 6, hintY - 10, textW + 12, 16, 4) : ctx.rect(hintX - textW / 2 - 6, hintY - 10, textW + 12, 16);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#fef08a';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(interactLabel, hintX, hintY - 2);
+    ctx.restore();
+  }
+
+
   // 6. Draw Weather (Noir Rain)
   if (isRaining) {
     ctx.strokeStyle = 'rgba(147, 197, 253, 0.45)';
@@ -4002,6 +4078,49 @@ function gameLoop() {
     drawWorld();
   }
   requestAnimationFrame(gameLoop);
+}
+
+
+// ==================== AUTO-SAVE & PERSISTENCE ====================
+function saveGameProgress() {
+  try {
+    const data = {
+      currentMapId,
+      playerX: player.x,
+      playerY: player.y,
+      questStep,
+      clues: Object.keys(allClues).filter(k => allClues[k].unlocked),
+      readDocs: Array.from(readDocuments),
+      exploredTopics: Array.from(exploredTopics)
+    };
+    localStorage.setItem('the_last_objection_save', JSON.stringify(data));
+  } catch(e) {}
+}
+
+function loadGameProgress() {
+  try {
+    const raw = localStorage.getItem('the_last_objection_save');
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+    if (!data || !data.currentMapId) return false;
+
+    if (data.clues && Array.isArray(data.clues)) {
+      data.clues.forEach(k => { if (allClues[k]) allClues[k].unlocked = true; });
+    }
+    if (data.readDocs && Array.isArray(data.readDocs)) {
+      data.readDocs.forEach(d => readDocuments.add(d));
+    }
+    if (data.exploredTopics && Array.isArray(data.exploredTopics)) {
+      data.exploredTopics.forEach(t => exploredTopics.add(t));
+    }
+    if (data.questStep) questStep = data.questStep;
+
+    updateBagCount();
+    warpToMap(data.currentMapId, Math.round(data.playerX / TILE_SIZE), Math.round(data.playerY / TILE_SIZE), true);
+    return true;
+  } catch(e) {
+    return false;
+  }
 }
 
 // ==================== UI & MODALS ====================
@@ -4151,7 +4270,10 @@ function setupDOMEvents() {
       if (titleEl) titleEl.style.display = 'none';
       if (gameAppEl) gameAppEl.style.display = 'flex';
       gameState = 'playing';
-      warpToMap('office', 12, 7, true);
+      const loaded = loadGameProgress();
+      if (!loaded) {
+        warpToMap('office', 12, 7, true);
+      }
       drawWorld();
     });
   }
