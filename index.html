@@ -551,6 +551,54 @@
   }
 
   /* Dialogue Box */
+  
+  /* Dialogue Box Avatar & Inner Layout */
+  .dialogue-box-inner {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+  }
+
+  .dialogue-avatar-box {
+    width: 68px;
+    height: 68px;
+    background: #1e130c;
+    border: 2px solid #b45309;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 3px 8px rgba(0,0,0,0.6);
+  }
+
+  #dialogueAvatarCanvas {
+    width: 60px;
+    height: 60px;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  .dialogue-content-box {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .present-btn {
+    background: #78350f !important;
+    border-color: #fde047 !important;
+    color: #fef08a !important;
+  }
+
+  .present-btn:hover {
+    background: #92400e !important;
+    box-shadow: 0 0 10px rgba(253, 224, 71, 0.6) !important;
+  }
+
   .pokemon-dialogue-pane {
     position: relative;
     width: 100%;
@@ -1703,16 +1751,23 @@
       <canvas id="mainCanvas" width="800" height="480" tabindex="0"></canvas>
     </div>
 
-    <!-- Bottom Pokemon Red Style Dialogue Box -->
+    <!-- Bottom Pokemon Red / Ace Attorney Dialogue Box -->
     <div class="pokemon-dialogue-pane" id="dialoguePane">
-      <div class="dialogue-header-line">
-        <span class="dialogue-speaker-name" id="speakerLabel">JUSTIN VANCE (DEFENSE COUNSEL)</span>
-        <span class="dialogue-sub-hint">[SPACE / CLICK] Advance · [B] Dossier · [M] Map</span>
+      <div class="dialogue-box-inner">
+        <div class="dialogue-avatar-box" id="dialogueAvatarBox">
+          <canvas id="dialogueAvatarCanvas" width="32" height="32"></canvas>
+        </div>
+        <div class="dialogue-content-box">
+          <div class="dialogue-header-line">
+            <span class="dialogue-speaker-name" id="speakerLabel">JUSTIN VANCE (DEFENSE COUNSEL)</span>
+            <span class="dialogue-sub-hint" id="dialogueSubHint">[SPACE / CLICK] Advance · [B] Dossier · [M] Map</span>
+          </div>
+          <div class="dialogue-text-body" id="dialogueText">
+            My father, Judge Lawrence Vance, was killed inside the hospital's MRI scanner... Dr. Aris is accused, but my father trusted him for decades. I need to find the truth before the trial begins.
+          </div>
+          <div class="dialogue-choices" id="dialogueChoices"></div>
+        </div>
       </div>
-      <div class="dialogue-text-body" id="dialogueText">
-        My father, Judge Lawrence Vance, was killed inside the hospital's MRI scanner... Dr. Aris is accused, but my father trusted him for decades. I need to find the truth before the trial begins.
-      </div>
-      <div class="dialogue-choices" id="dialogueChoices"></div>
       <div class="dialogue-caret">▼</div>
     </div>
 
@@ -3047,7 +3102,9 @@ const worldMaps = {
       { id: "court_sign", x: 15, y: 2, w: 2, h: 1, name: "SUPREME COURT PLAQUE", text: "SUPREME COURT OF JUSTICE · CHAMBER VIII. THE HIGH BENCH. [Entrance at (15, 4)]", type: "desk" },
       { id: "atm_sign", x: 26, y: 14, w: 2, h: 1, name: "CITY BANK & 24/7 ATM", text: "CITY COMMERCIAL BANK · 24-HOUR EXTERNAL ATM TERMINAL. Directly overlooks the clinic back alley. [Door at (27, 16)]", type: "desk" },
       { id: "hideout_sign", x: 3, y: 15, w: 2, h: 1, name: "CONDEMNED WAREHOUSE", text: "PIER 14 INDUSTRIAL MACHINE SHOP. Boarded up and marked with police tape. [Door at (3, 17)]", type: "desk" },
-      { id: "office_sign", x: 8, y: 13, w: 2, h: 1, name: "LAW OFFICE SIGN", text: "VANCE & ASSOCIATES · ATTORNEYS AT LAW. [Door at (8, 14)]", type: "desk" }
+      { id: "office_sign", x: 8, y: 13, w: 2, h: 1, name: "LAW OFFICE SIGN", text: "VANCE & ASSOCIATES · ATTORNEYS AT LAW. [Door at (8, 14)]", type: "desk" },
+      { id: "police_sign", x: 18, y: 10, w: 2, h: 1, name: "POLICE 4TH PRECINCT SIGN", text: "METRO POLICE DEPARTMENT · HOMICIDE DIVISION & HOLDING CELLS. [Door at (18, 11)]", type: "desk" },
+      { id: "police_cruiser", x: 14, y: 9, w: 3, h: 2, name: "HOMICIDE CRUISER #402", text: "Black-and-white police interceptor with emergency lights flashing across the asphalt.", type: "desk", isCruiser: true }
     ],
     warps: [
       { x: 8, y: 14, targetMap: "office", targetX: 12, targetY: 13, label: "ENTER VANCE LAW OFFICE" },
@@ -3055,7 +3112,8 @@ const worldMaps = {
       { x: 25, y: 4, targetMap: "clinic", targetX: 12, targetY: 13, label: "ENTER DR. ARIS DENTAL PRACTICE" },
       { x: 27, y: 16, targetMap: "atm_kiosk", targetX: 12, targetY: 13, label: "ENTER BANK & ATM TERMINAL" },
       { x: 3, y: 17, targetMap: "safehouse", targetX: 12, targetY: 13, reqClue: "atm_footage", label: "ENTER DOCKLANDS SAFEHOUSE" },
-      { x: 15, y: 4, targetMap: "courtroom", targetX: 12, targetY: 13, label: "ENTER SUPREME COURTROOM VIII" }
+      { x: 15, y: 4, targetMap: "courtroom", targetX: 12, targetY: 13, label: "ENTER SUPREME COURTROOM VIII" },
+      { x: 18, y: 11, targetMap: "police_station", targetX: 12, targetY: 13, label: "ENTER POLICE 4TH PRECINCT" }
     ],
     npcs: [
       {
@@ -3201,6 +3259,49 @@ const worldMaps = {
     ]
   },
 
+  police_station: {
+    id: "police_station",
+    name: "POLICE 4TH PRECINCT · HOMICIDE & HOLDING CELL",
+    w: 25,
+    h: 15,
+    tiles: [],
+    props: [
+      { id: "miller_desk", x: 6, y: 4, w: 4, h: 2, name: "DETECTIVE MILLER'S DESK", text: "Case folders, coffee mugs, and police dispatch logs covering the suspicious sedan and Mercer's expedited arrest warrant.", type: "desk" },
+      { id: "jail_bars", x: 16, y: 3, w: 7, h: 4, name: "HOLDING CELL IRON BARS", text: "Dr. Raymond Aris is held behind these bars awaiting trial. He clutches his head in despair.", type: "desk" }
+    ],
+    warps: [
+      { x: 12, y: 14, targetMap: "overworld", targetX: 18, targetY: 12, label: "EXIT TO PRECINCT PLAZA" }
+    ],
+    npcs: [
+      {
+        id: "aris_jail",
+        x: 19,
+        y: 5,
+        name: "DR. RAYMOND ARIS (IN CUSTODY)",
+        sprite: "dentist",
+        greeting: "Justin! It's so cold in here... Mercer told me I will spend the rest of my life in maximum security. Please tell me you found proof!",
+        topics: [
+          { id: "aris_jail_innocent", label: '🛡️ "I will clear your name, Dr. Aris."', text: "Thank you, Justin! Remember, my Swiss order serial was #CH-Pd-8891-VANCE. If you find the real tooth, Mercer's entire case collapses!" },
+          { id: "aris_jail_mercer", label: '⚖️ "Did Mercer question you personally?"', text: "Yes! He smirked the whole time and said: 'Judge Vance thought he was infallible. Now he's in a morgue, and you're in a cage.' He relished every second!" },
+          { id: "aris_jail_leave", label: '👋 "Hold on, Dr. Aris. Court is starting."', text: "May justice prevail, Counselor Vance!" }
+        ]
+      },
+      {
+        id: "det_miller_precinct",
+        x: 8,
+        y: 5,
+        name: "DETECTIVE MILLER (HOMICIDE)",
+        sprite: "detective",
+        greeting: "Counselor Vance. I've been pulling registration records on that black sedan #7X-904. We're getting closer to Mercer.",
+        topics: [
+          { id: "mill_precinct_sedan", label: '🚗 "What did you find on the car?"', text: "The vehicle was leased under an offshore LLC where the primary cardholder is Kaizen Mercer! The puzzle pieces are locking together." },
+          { id: "mill_precinct_warrant", label: '🚨 "Can you delay the trial?"', text: "Chief Justice Sterling has already convened Courtroom VIII. There's no stopping it now. You must confront Mercer on the record!" },
+          { id: "mill_precinct_leave", label: '👋 "I am heading to the High Court."', text: "Bring down the gavel on him, Justin." }
+        ]
+      }
+    ]
+  },
+
   courtroom: {
     id: "courtroom",
     name: "SUPREME COURT OF JUSTICE · CHAMBER VIII",
@@ -3293,7 +3394,80 @@ function initMapTiles() {
 initMapTiles();
 
 // ==================== NPC DIALOGUE SYSTEM ====================
-function showDialogue(speaker, text) {
+
+// ==================== TYPEWRITER & PORTRAIT SYSTEM ====================
+let typewriterTimer = null;
+let fullDialogueText = "";
+let currentTypeIndex = 0;
+let isTypewriting = false;
+
+function renderDialogueAvatar(spriteName, palette) {
+  const c = document.getElementById('dialogueAvatarCanvas');
+  if (!c) return;
+  const aCtx = c.getContext('2d');
+  aCtx.clearRect(0, 0, c.width, c.height);
+
+  let sprite = lawyerSprites.side_idle;
+  let pal = lawyerPalette;
+
+  if (spriteName === 'dentist') { sprite = dentistSprite; pal = dentistPalette; }
+  else if (spriteName === 'radiologist') { sprite = radiologistSprite; pal = radiologistPalette; }
+  else if (spriteName === 'detective') { sprite = detectiveSprite; pal = detectivePalette; }
+  else if (spriteName === 'kaizen') { sprite = kaizenSprite; pal = kaizenPalette; }
+  else if (spriteName === 'judge') { sprite = judgeSprite; pal = judgePalette; }
+  else if (spriteName === 'justin') { sprite = lawyerSprites.down_idle; pal = lawyerPalette; }
+
+  renderSprite(aCtx, sprite, 0, 0, pal, 2, false);
+}
+
+function startTypewriter(speaker, text, spriteName, palette) {
+  if (typewriterTimer) clearInterval(typewriterTimer);
+  fullDialogueText = text;
+  currentTypeIndex = 0;
+  isTypewriting = true;
+
+  const speakerEl = document.getElementById('speakerLabel');
+  const textEl = document.getElementById('dialogueText');
+  if (speakerEl) speakerEl.textContent = speaker;
+  if (textEl) textEl.textContent = "";
+
+  renderDialogueAvatar(spriteName || 'justin', palette || lawyerPalette);
+
+  typewriterTimer = setInterval(() => {
+    if (currentTypeIndex < fullDialogueText.length) {
+      currentTypeIndex++;
+      if (textEl) textEl.textContent = fullDialogueText.substring(0, currentTypeIndex);
+      if (currentTypeIndex % 3 === 0) AudioEngine.playBlip();
+    } else {
+      clearInterval(typewriterTimer);
+      typewriterTimer = null;
+      isTypewriting = false;
+    }
+  }, 16);
+}
+
+function skipTypewriter() {
+  if (isTypewriting && typewriterTimer) {
+    clearInterval(typewriterTimer);
+    typewriterTimer = null;
+    isTypewriting = false;
+    const textEl = document.getElementById('dialogueText');
+    if (textEl) textEl.textContent = fullDialogueText;
+    return true;
+  }
+  return false;
+}
+
+function showDialogue(speaker, text, spriteName) {
+  startTypewriter(speaker, text, spriteName || 'justin');
+  const choicesEl = document.getElementById('dialogueChoices');
+  if (choicesEl) {
+    choicesEl.innerHTML = '';
+    choicesEl.classList.remove('active');
+  }
+}
+
+function oldShowDialogue(speaker, text) {
   const speakerEl = document.getElementById('speakerLabel');
   const textEl = document.getElementById('dialogueText');
   const choicesEl = document.getElementById('dialogueChoices');
@@ -3309,12 +3483,8 @@ function startNPCDialogue(npc) {
   activeNPC = npc;
   AudioEngine.playBlip();
 
-  const speakerEl = document.getElementById('speakerLabel');
-  const textEl = document.getElementById('dialogueText');
   const choicesEl = document.getElementById('dialogueChoices');
-
-  if (speakerEl) speakerEl.textContent = npc.name;
-  if (textEl) textEl.textContent = npc.greeting || npc.text || "Hello, Counselor Vance.";
+  startTypewriter(npc.name, npc.greeting || npc.text || "Hello, Counselor Vance.", npc.sprite);
 
   if (choicesEl && npc.topics && npc.topics.length > 0) {
     choicesEl.innerHTML = '';
@@ -3331,15 +3501,67 @@ function startNPCDialogue(npc) {
       });
       choicesEl.appendChild(btn);
     });
+
+    // PRESENT EVIDENCE BUTTON TO NPC (Ace Attorney Style!)
+    const presBtn = document.createElement('button');
+    presBtn.className = 'choice-btn present-btn';
+    presBtn.innerHTML = '⚡ PRESENT EVIDENCE';
+    presBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openBagModalForNPC(npc);
+    });
+    choicesEl.appendChild(presBtn);
   }
+}
+
+function openBagModalForNPC(npc) {
+  openBagModal();
+  const btnPres = document.getElementById('btnPresentCurrentClue');
+  if (btnPres) {
+    btnPres.style.display = 'block';
+    btnPres.textContent = `⚡ PRESENT TO ${npc.name.split(' ')[0]}`;
+    btnPres.onclick = () => {
+      closeBagModal();
+      presentClueToNPC(npc, selectedClueId);
+    };
+  }
+}
+
+function presentClueToNPC(npc, clueId) {
+  AudioEngine.playObjection();
+  const clue = allClues[clueId];
+  if (!clue) return;
+
+  let reaction = "That's an interesting piece of evidence, Counselor Vance, but I'm not sure how it connects.";
+
+  if (npc.id === 'assistant_maya') {
+    if (clueId === 'mercer_dossier') reaction = "Maya: 'That disbarment order proves Mercer has had a burning vendetta against Judge Vance for three whole years!'";
+    else if (clueId === 'mri_report') reaction = "Maya: '420 Newtons of magnetic force?! That proves the tooth was a lethal projectile weapon, not an accident!'";
+    else if (clueId === 'atm_footage') reaction = "Maya: 'Mercer's black sedan was in Dr. Aris's alley at 3:15 AM! That shatters his alibi completely!'";
+  } else if (npc.id === 'dr_evans') {
+    if (clueId === 'mri_report') reaction = "Dr. Evans: 'Yes, exactly! Those are my forensic calculations. Biocompatible palladium simply could not react to the 3.0T magnetic field.'";
+    else if (clueId === 'stolen_tooth') reaction = "Dr. Evans: 'Incredible... that is authentic non-ferromagnetic Swiss palladium! That proves the tooth in Vance's jaw was an iron substitute!'";
+  } else if (npc.id === 'dr_aris' || npc.id === 'aris_jail') {
+    if (clueId === 'dentist_invoice') reaction = "Dr. Aris: 'My Swiss invoice! Thank God, Justin! That proves I ordered genuine Palladium-100 and never bought cheap iron!'";
+    else if (clueId === 'wire_receipt') reaction = "Dr. Aris: 'Apex Legal Holdings wired that money?! That's Mercer's corporate shell! He set up that offshore account to frame me!'";
+    else if (clueId === 'stolen_tooth') reaction = "Dr. Aris: 'That's my serial number #CH-Pd-8891-VANCE! Someone stole the real crown from my sterile tray!'";
+  } else if (npc.id === 'det_miller_overworld' || npc.id === 'det_miller_precinct') {
+    if (clueId === 'atm_footage') reaction = "Detective Miller: 'That license plate #7X-904... by God, it's registered directly to Apex Legal Holdings! Mercer was at the clinic!'";
+    else if (clueId === 'wire_receipt') reaction = "Detective Miller: 'A $250,000 transfer from Mercer's own escrow account?! That connects him directly to fabricating the frame-up!'";
+  } else if (npc.id === 'slick_informant') {
+    if (clueId === 'stolen_tooth') reaction = "Slick: 'Y-You found it! That's the real Swiss tooth Mercer locked in the solvent jar so nobody would trace the metals!'";
+  } else if (npc.id === 'kaizen_npc') {
+    if (clueId === 'mercer_dossier') reaction = "Kaizen: 'Hah! Bring up that old disbarment all you want, Vance! It won't bring your dear father back!'";
+    else if (clueId === 'stolen_tooth') reaction = "Kaizen: 'G-Guh?! Where did you find that crown?! That was supposed to be at the bottom of the pier!'";
+  }
+
+  startTypewriter(npc.name, reaction, npc.sprite);
 }
 
 function selectDialogueTopic(npc, topic) {
   AudioEngine.playBlip();
   exploredTopics.add(topic.id);
-
-  const textEl = document.getElementById('dialogueText');
-  if (textEl) textEl.textContent = topic.text;
+  startTypewriter(npc.name, topic.text, npc.sprite);
 
   if (topic.givesClue) {
     acquireClue(topic.givesClue);
@@ -3871,6 +4093,28 @@ function drawWorld() {
     } else {
       ctx.fillStyle = '#78350f';
       ctx.fillRect(px, py, pw, ph);
+    }
+
+    // Dynamic Lighting Halos (Volumetric Light Cones!)
+    if (p.type === 'mri') {
+      const pulse = Math.sin(Date.now() / 350) * 8;
+      const grad = ctx.createRadialGradient(px + pw / 2, py + ph / 2, 15, px + pw / 2, py + ph / 2, 70 + pulse);
+      grad.addColorStop(0, 'rgba(56, 189, 248, 0.35)');
+      grad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(px + pw / 2, py + ph / 2, 70 + pulse, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (p.isCruiser) {
+      const sirenPhase = Math.floor(Date.now() / 240) % 2;
+      const sColor = sirenPhase === 0 ? 'rgba(239, 68, 68, 0.45)' : 'rgba(59, 130, 246, 0.45)';
+      const grad = ctx.createRadialGradient(px + pw / 2, py + ph / 2, 10, px + pw / 2, py + ph / 2, 85);
+      grad.addColorStop(0, sColor);
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(px + pw / 2, py + ph / 2, 85, 0, Math.PI * 2);
+      ctx.fill();
     }
 
     // Draw Document / Clue indicator badge if unread
@@ -4487,6 +4731,7 @@ function setupDOMEvents() {
     keys[k] = true;
 
     if (k === 'e' || k === ' ') {
+      if (skipTypewriter()) return;
       if (gameState === 'playing') interactWithWorld();
     } else if (k === 'b') {
       openBagModal();
@@ -4521,9 +4766,9 @@ function setupDOMEvents() {
   });
 
   document.getElementById('dialoguePane').addEventListener('click', (e) => {
-    if (!e.target.classList.contains('choice-btn')) {
-      interactWithWorld();
-    }
+    if (e.target.classList.contains('choice-btn')) return;
+    if (skipTypewriter()) return;
+    interactWithWorld();
   });
 }
 
@@ -4539,6 +4784,7 @@ function renderTownMap() {
     { id: 'clinic', name: 'Dr. Aris Dental Practice', desc: 'Clinic safe & hacked security DVR console.' },
     { id: 'atm_kiosk', name: 'Commercial Bank & ATM', desc: '24/7 ATM camera overlooking clinic alley.' },
     { id: 'safehouse', name: 'Docklands Safehouse', desc: 'Burglar hideout & recovered genuine tooth.' },
+    { id: 'police_station', name: 'Police 4th Precinct', desc: 'Homicide bullpen & Dr. Aris in holding cell.' },
     { id: 'courtroom', name: 'Supreme Courtroom VIII', desc: 'Final trial arena with Chief Justice Sterling.' }
   ];
 
