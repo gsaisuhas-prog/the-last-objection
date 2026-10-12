@@ -1466,6 +1466,7 @@
 </div>
 
 <script>
+let lastWarpTime = 0;
 
 // ==================== GLOBAL STATE ====================
 let gameState = 'title'; // 'title' | 'playing' | 'court_battle'
@@ -1933,6 +1934,7 @@ const dentistSprite = [
 ];
 const dentistPalette = {
   'O': '#0f172a',
+  'H': '#1c1917',
   'G': '#78350f',
   'S': '#fcd5a8',
   'E': '#0284c7',
@@ -2017,6 +2019,7 @@ const judgeSprite = [
 ];
 const judgePalette = {
   'O': '#0f172a',
+  'H': '#1c1917',
   'L': '#e2e8f0',
   'S': '#fcd5a8',
   'E': '#0f172a',
@@ -2036,7 +2039,7 @@ function renderSprite(ctx, spriteRows, px, py, palette, scale = 2, flipX = false
     for (let c = 0; c < 16; c++) {
       const char = spriteRows[r][c];
       if (char !== '.') {
-        ctx.fillStyle = palette[char] || '#000000';
+        ctx.fillStyle = (palette && palette[char]) ? palette[char] : '#000000';
         const colPos = flipX ? (15 - c) : c;
         ctx.fillRect(px + colPos * scale, py + r * scale, scale, scale);
       }
@@ -2211,7 +2214,7 @@ const worldMaps = {
       { id: 'leather_couch', x: 18, y: 7, w: 4, h: 2, name: "CHESTERFIELD SOFA", text: "A burgundy leather sofa where clients used to wait for consultations.", type: 'desk' }
     ],
     warps: [
-      { x: 12, y: 14, targetMap: 'overworld', targetX: 8, targetY: 15, label: "EXIT TO DISTRICT" }
+      { x: 12, y: 14, targetMap: 'overworld', targetX: 8, targetY: 16, label: "EXIT TO DISTRICT" }
     ],
     npcs: [
       { id: 'assistant', x: 6, y: 5, name: "LEGAL CLERK MAYA", sprite: 'radiologist', text: "Mr. Vance, I'm so sorry about your father. The police rushed to arrest Dr. Aris, but you should check Memorial Hospital's MRI wing and the dental clinic!" }
@@ -3117,6 +3120,7 @@ function returnToTitle() {
 }
 
 function warpToMap(mapId, startX, startY) {
+  lastWarpTime = Date.now();
   const target = worldMaps[mapId];
   if (!target) return;
 
@@ -3329,15 +3333,19 @@ function updatePlayerMovement() {
   }
 
   // Automatic Door Warp Check
-  for (let warp of currentMap.warps) {
-    const wx = warp.x * TILE_SIZE + 16;
-    const wy = warp.y * TILE_SIZE + 16;
-    if (Math.hypot(player.x + 13 - wx, player.y + 14 - wy) < 22) {
-      if (warp.reqClue && !allClues[warp.reqClue].unlocked) {
-        // Locked
-      } else {
-        warpToMap(warp.targetMap, warp.targetX, warp.targetY);
-        break;
+  const now = Date.now();
+  if (now - lastWarpTime > 800) {
+    for (let warp of currentMap.warps) {
+      const wx = warp.x * TILE_SIZE + 16;
+      const wy = warp.y * TILE_SIZE + 16;
+      if (Math.hypot(player.x + 13 - wx, player.y + 14 - wy) < 22) {
+        if (warp.reqClue && !allClues[warp.reqClue].unlocked) {
+          showDialogue("LOCKED PERIMETER", "Police tape blocks the entrance. You need verified vehicle surveillance records to search this warehouse.");
+        } else {
+          lastWarpTime = now;
+          warpToMap(warp.targetMap, warp.targetX, warp.targetY);
+          break;
+        }
       }
     }
   }
@@ -3462,11 +3470,11 @@ function drawWorld() {
     } else if (npc.sprite === 'radiologist') {
       renderSprite(ctx, radiologistSprite, npx, npy, radiologistPalette, 2);
     } else if (npc.sprite === 'detective') {
-      renderSprite(ctx, detectiveSprite, detectivePalette, 2);
+      renderSprite(ctx, detectiveSprite, npx, npy, detectivePalette, 2);
     } else if (npc.sprite === 'kaizen') {
-      renderSprite(ctx, kaizenSprite, kaizenPalette, 2);
+      renderSprite(ctx, kaizenSprite, npx, npy, kaizenPalette, 2);
     } else if (npc.sprite === 'chief_judge') {
-      renderSprite(ctx, judgeSprite, judgePalette, 2);
+      renderSprite(ctx, judgeSprite, npx, npy, judgePalette, 2);
     } else {
       renderSprite(ctx, dentistSprite, npx, npy, dentistPalette, 2);
     }
