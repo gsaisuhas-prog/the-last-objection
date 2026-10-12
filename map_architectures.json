@@ -1,0 +1,68 @@
+{
+  "metropolis": "Veridia Legal District",
+  "architectures": [
+    {
+      "id": "overworld",
+      "name": "Veridia Metropolitan Legal District",
+      "dimensions": "50 x 30 tiles (1600 x 960 px)",
+      "theme": "Neo-Victorian & Classical Judicial Metropolis",
+      "landmarks": [
+        "Judicial Colonnade & High Court Steps (North)",
+        "Central Civic Fountain with animated water jets (Center)",
+        "Medical Row Ambulance Bay & Dental Surgery (East)",
+        "Commercial Bank & 24/7 ATM CCTV Alley (Southeast)",
+        "Police 4th Precinct & Parked Cruiser #402 with flashing sirens (West)",
+        "Pier 14 Waterfront Boardwalk over animated ocean waves (Southwest)"
+      ]
+    },
+    {
+      "id": "office",
+      "name": "Vance Law Chambers & Archives",
+      "dimensions": "25 x 15 tiles (800 x 480 px)",
+      "theme": "Classical English Law Study",
+      "features": "Herringbone parquet oak flooring, Persian carpet, Father's mahogany desk with green banker's lamp, memorial portrait with flickering candle, floor-to-ceiling law libraries."
+    },
+    {
+      "id": "hospital",
+      "name": "Memorial Hospital Radiology Wing",
+      "dimensions": "25 x 15 tiles (800 x 480 px)",
+      "theme": "High-Tech Superconducting Cleanroom",
+      "features": "Ceramic grid tiles, 3.0 Tesla cylindrical MRI gantry with cyan magnetic core aura, sliding patient gurney couch, dual-monitor diagnostic workstation with live animated ECG pulse waveforms."
+    },
+    {
+      "id": "clinic",
+      "name": "Dr. Aris Family Dental Practice",
+      "dimensions": "25 x 15 tiles (800 x 480 px)",
+      "theme": "Clinical Operatory & Surgical Suite",
+      "features": "Mint linoleum flooring, hydraulic dental surgery chair with articulated spotlight, wall X-ray lightbox showing tooth #19 radiograph, medicine storage safe, hacked security DVR console."
+    },
+    {
+      "id": "atm_kiosk",
+      "name": "Commercial Bank & 24/7 ATM Kiosk",
+      "dimensions": "25 x 15 tiles (800 x 480 px)",
+      "theme": "Granite Financial Banking Hall & Alley",
+      "features": "Polished granite floor, glowing emerald green ATM screen, international wire transaction counter, brick service alley with dumpster and 4K security camera."
+    },
+    {
+      "id": "safehouse",
+      "name": "Pier 14 Abandoned Machine Shop",
+      "dimensions": "25 x 15 tiles (800 x 480 px)",
+      "theme": "Industrial Maritime Workshop",
+      "features": "Weathered wooden boardwalk planks over animated dark ocean waves, precision CNC lathe with pure carbon iron shavings, chemical solvent safe holding the genuine Swiss palladium crown, rusted oil drums."
+    },
+    {
+      "id": "police_station",
+      "name": "Police 4th Precinct Homicide Bullpen & Holding Cell",
+      "dimensions": "25 x 15 tiles (800 x 480 px)",
+      "theme": "Municipal Law Enforcement Bullpen",
+      "features": "Detective Miller's homicide desk with case files and dispatch radio, evidence lockup lockers, iron-barred detention holding cell where Dr. Raymond Aris is held in custody."
+    },
+    {
+      "id": "courtroom",
+      "name": "Supreme Court of Justice (Chamber VIII)",
+      "dimensions": "25 x 15 tiles (800 x 480 px)",
+      "theme": "Grand Neoclassical Judicial Rotunda",
+      "features": "Cream and charcoal checkerboard marble tile, fluted Doric pillars, red velvet carpet runner, elevated oak judicial dais with Scales of Justice bronze bas-relief, defense and prosecution podiums with microphones, gallery benches."
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "cutscenes": [
+    {
+      "scene_id": "prologue_mri_incident",
+      "title": "PROLOGUE // THE MIDNIGHT MRI INCIDENT",
+      "music_theme": "tension",
+      "slides": [
+        {
+          "index": 1,
+          "timestamp": "OCTOBER 12, 10:14 AM",
+          "location": "Memorial Hospital Radiology Wing",
+          "heading": "THE HIGH-FIELD 3.0 TESLA SCANNER",
+          "narration": "Judge Lawrence Vance lies inside the active-shielded 3.0 Tesla MRI suite for his annual cranial checkup. Forty-eight hours prior, his trusted dentist Dr. Raymond Aris completed his molar implant procedure.",
+          "visuals": "Sterile cleanroom chamber, glowing cyan MRI gantry bore, sliding patient gurney couch, diagnostic monitor with steady ECG heartbeat pulses."
+        },
+        {
+          "index": 2,
+          "timestamp": "OCTOBER 12, 10:14:32 AM",
+          "location": "Inside the Superconducting Magnet Bore",
+          "heading": "THE MAGNETIC WEAPON ENERGIZES",
+          "narration": "The 30,000 Gauss magnetic core activates. Inside the Judge's jaw, a tooth secretly milled from 99.2% pure carbon iron reacts with supersonic violence—generating 424.8 Newtons of magnetic pull!",
+          "visuals": "Converging red magnetic flux vector lines, spark trajectory streak, high-velocity projectile exiting the mandibular alveolar ridge at 48.2 meters per second."
+        },
+        {
+          "index": 3,
+          "timestamp": "OCTOBER 12, 10:15:02 AM",
+          "location": "Control Console Chamber B-4",
+          "heading": "CRITICAL EMERGENCY // CODE RED",
+          "narration": "Intracranial missile trauma. Emergency alarms wail as Dr. Marcus Evans collapses against the control glass in horror. The revered 'Iron Gavel of Truth' is dead.",
+          "visuals": "Flashing red emergency alarm strobes, shattered MRI gantry face, flatline ECG waveform monitor, medical crash cart overturned."
+        },
+        {
+          "index": 4,
+          "timestamp": "OCTOBER 11, 03:15:18 AM",
+          "location": "Clinic Rear Service Alleyway",
+          "heading": "THE MIDNIGHT BURGLARY & FRAME-UP",
+          "narration": "Special Prosecutor Kaizen Mercer, disbarred 3 years ago by Judge Vance for fabricating evidence in State v. Mercer, smiles in the dark alley. The authentic Swiss palladium tooth is stolen, and the lethal iron decoy is planted.",
+          "visuals": "Rain-slicked alleyway, black German sedan (#7X-904), Mercer silhouette in tailored burgundy coat turning his 18k gold soaring falcon signet ring."
+        },
+        {
+          "index": 5,
+          "timestamp": "OCTOBER 12, 11:30 AM",
+          "location": "Vance Law Chambers & Archives",
+          "heading": "THE INHERITANCE OF JUSTICE",
+          "narration": "Justin Vance: 'They framed Dr. Aris and thought the truth would die with my father. Father... I will not let your legacy perish. I will drag Kaizen Mercer's conspiracy into the light of Courtroom VIII!'",
+          "visuals": "Dimly lit mahogany law study, Judge Vance's framed memorial portrait with black ribbon, Justin Vance tightening his blue tie and clasping his father's attorney badge."
+        }
+      ]
+    }
+  ]
+}
