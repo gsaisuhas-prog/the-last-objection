@@ -1,0 +1,165 @@
+{
+  "npcs": [
+    {
+      "id": "assistant_maya",
+      "name": "Legal Clerk Maya",
+      "location": "Vance Law Offices",
+      "greeting": "Mr. Vance, I'm so sorry about your father. The police rushed to arrest Dr. Aris, but we cannot let Mercer destroy an innocent man! What should we investigate?",
+      "topics": [
+        {
+          "id": "maya_mri",
+          "prompt": "Tell me about Father's murder in the MRI",
+          "unlocks_clue": "mri_report"
+        },
+        {
+          "id": "maya_mercer",
+          "prompt": "What was Father's history with Kaizen Mercer?",
+          "unlocks_clue": "mercer_dossier"
+        },
+        {
+          "id": "maya_start",
+          "prompt": "Where should I begin the investigation?",
+          "unlocks_clue": null
+        },
+        {
+          "id": "maya_court",
+          "prompt": "Review Courtroom Strategy",
+          "unlocks_clue": null
+        }
+      ]
+    },
+    {
+      "id": "dr_evans",
+      "name": "Dr. Marcus Evans",
+      "location": "Memorial Hospital Radiology Wing",
+      "greeting": "Justin, I am heartbroken. I was the supervising radiologist during the scan. What happened in that chamber was no medical error\u2014it was a weaponized assassination.",
+      "topics": [
+        {
+          "id": "evans_physics",
+          "prompt": "Explain the physics of the 3.0T magnet",
+          "unlocks_clue": "mri_report"
+        },
+        {
+          "id": "evans_ballistics",
+          "prompt": "Could this have been an accidental dental defect?",
+          "unlocks_clue": null
+        },
+        {
+          "id": "evans_report",
+          "prompt": "May I examine the official autopsy report?",
+          "unlocks_clue": "mri_report"
+        }
+      ]
+    },
+    {
+      "id": "dr_aris",
+      "name": "Dr. Raymond Aris",
+      "location": "Dr. Aris Family Dental Practice",
+      "greeting": "Justin! Thank God you're here! I loved your father like my own brother! The police handcuffed me and Mercer claims I took a bribe to kill him... but I swear on my life, I am innocent!",
+      "topics": [
+        {
+          "id": "aris_invoice",
+          "prompt": "What tooth did you actually order?",
+          "unlocks_clue": "dentist_invoice"
+        },
+        {
+          "id": "aris_breakin",
+          "prompt": "Was there any sign of an intruder?",
+          "unlocks_clue": "clinic_cctv"
+        },
+        {
+          "id": "aris_bribe",
+          "prompt": "The police claim you received $250,000?",
+          "unlocks_clue": null
+        }
+      ]
+    },
+    {
+      "id": "bank_guard",
+      "name": "Bank Security Officer",
+      "location": "Commercial Bank & 24/7 ATM",
+      "greeting": "Evening, counselor. Working on Judge Vance's case? I was on duty at the bank across from Dr. Aris's clinic the night before the surgery.",
+      "topics": [
+        {
+          "id": "guard_cctv",
+          "prompt": "Did the ATM camera record the alley?",
+          "unlocks_clue": "atm_footage"
+        },
+        {
+          "id": "guard_driver",
+          "prompt": "Could you identify the driver?",
+          "unlocks_clue": null
+        },
+        {
+          "id": "guard_wire",
+          "prompt": "What about the $250,000 wire transfer?",
+          "unlocks_clue": "wire_receipt"
+        }
+      ]
+    },
+    {
+      "id": "det_miller",
+      "name": "Detective Miller",
+      "location": "Veridia Legal District Overworld",
+      "greeting": "Justin. Your father taught me everything I know about criminal investigation. I don't believe for one second that Dr. Aris is guilty, but Mercer has the DA in his pocket.",
+      "topics": [
+        {
+          "id": "mill_warrant",
+          "prompt": "Why did Mercer rush the arrest warrant?",
+          "unlocks_clue": null
+        },
+        {
+          "id": "mill_car",
+          "prompt": "Have you traced the suspicious black sedan?",
+          "unlocks_clue": "atm_footage"
+        },
+        {
+          "id": "mill_court",
+          "prompt": "Is the Supreme Court trial ready?",
+          "unlocks_clue": null
+        }
+      ]
+    },
+    {
+      "id": "slick_informant",
+      "name": "Informant Slick",
+      "location": "Pier 14 Abandoned Machine Shop",
+      "greeting": "W-Who are you?! Don't shoot! I just watch the warehouse, I don't know nothing about no dead judge!",
+      "topics": [
+        {
+          "id": "slick_lathe",
+          "prompt": "What was Mercer doing in this machine shop?",
+          "unlocks_clue": "stolen_tooth"
+        },
+        {
+          "id": "slick_tooth",
+          "prompt": "Where is the real Swiss palladium crown?",
+          "unlocks_clue": "stolen_tooth"
+        },
+        {
+          "id": "slick_vendetta",
+          "prompt": "Why did Mercer do all this?",
+          "unlocks_clue": null
+        }
+      ]
+    },
+    {
+      "id": "kaizen_mercer",
+      "name": "Prosecutor Kaizen Mercer",
+      "location": "Supreme Courtroom VIII",
+      "greeting": "Well, well... the prodigal son returns! Look at you, Justin, shivering in your father's oversized suit. Have you come to watch the dentist get sentenced for murder?",
+      "topics": [
+        {
+          "id": "kaizen_taunt",
+          "prompt": "Why did you murder my father, Mercer?",
+          "unlocks_clue": null
+        },
+        {
+          "id": "kaizen_battle",
+          "prompt": "Begin Courtroom Showdown",
+          "unlocks_clue": null
+        }
+      ]
+    }
+  ]
+}

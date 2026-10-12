@@ -1,0 +1,71 @@
+{
+  "case": "State v. Dr. Raymond Aris",
+  "docket": "CR-88219-B",
+  "victim": "Judge Lawrence Vance",
+  "defendant": "Dr. Raymond Aris, D.D.S.",
+  "clues": [
+    {
+      "id": "mercer_dossier",
+      "name": "State v. Mercer Case File (Kaizen Motive)",
+      "source": "Father's Study Archives",
+      "doc_reference": "doc_mercer_2023",
+      "category": "Judicial Record",
+      "summary": "Official disbarment transcript where Judge Vance stripped Kaizen Mercer of his law license for forging evidence.",
+      "court_use": "Phase 4 Motive Contradiction"
+    },
+    {
+      "id": "mri_report",
+      "name": "MRI Ballistics & Iron Analysis",
+      "source": "Memorial Hospital (Radiology Wing)",
+      "doc_reference": "doc_mri_ballistics",
+      "category": "Forensic Physics",
+      "summary": "Calculations proving the implant was 99.2% ferromagnetic iron accelerated at 48.2 m/s with 424.8 N of force.",
+      "court_use": "Phase 1 Weapon Anomaly"
+    },
+    {
+      "id": "dentist_invoice",
+      "name": "Dr. Aris's Palladium Purchase Invoice",
+      "source": "Dr. Aris Dental Practice",
+      "doc_reference": "doc_zurich_invoice",
+      "category": "Commercial Record",
+      "summary": "Zurich Precision invoice #Z-8891 proving 100% Swiss medical palladium was purchased for 12,450 CHF.",
+      "court_use": "Phase 1 Malpractice Contradiction"
+    },
+    {
+      "id": "clinic_cctv",
+      "name": "Tampered Clinic CCTV Log (4-Min Loop)",
+      "source": "Dental Clinic Security Console",
+      "doc_reference": "doc_clinic_cctv",
+      "category": "Digital Forensics",
+      "summary": "DVR PTS timestamp analysis showing a 4-minute loop injected via USB drive APEX_CORP_04 at 03:10 AM.",
+      "court_use": "Phase 2 Security Contradiction"
+    },
+    {
+      "id": "atm_footage",
+      "name": "ATM Surveillance Snapshot (Plate #7X-904)",
+      "source": "Commercial Bank ATM Terminal",
+      "doc_reference": "doc_atm_cctv",
+      "category": "Surveillance Camera",
+      "summary": "Bank 4K camera still showing Mercer's black sedan and his gold falcon signet ring in the clinic alley.",
+      "court_use": "Phase 2 Alibi Shatter"
+    },
+    {
+      "id": "stolen_tooth",
+      "name": "The Genuine Palladium Tooth Crown",
+      "source": "Abandoned Safehouse Strongbox",
+      "doc_reference": "doc_foundry_lathe",
+      "category": "Physical Evidence",
+      "summary": "The authentic Swiss palladium crown stamped #CH-Pd-8891-VANCE recovered from Mercer's dockland lathe workshop.",
+      "court_use": "Phase 3 Physical Tooth Contradiction"
+    },
+    {
+      "id": "wire_receipt",
+      "name": "$250,000 Framing Wire Authorization Slip",
+      "source": "Commercial Bank Wire Records",
+      "doc_reference": "doc_wire_transfer",
+      "category": "Financial Record",
+      "summary": "Wire transfer slip proving the $250k Cayman bribe originated from Apex Legal Holdings Ltd (Mercer's escrow).",
+      "court_use": "Phase 4 Smoking Gun"
+    }
+  ]
+}
