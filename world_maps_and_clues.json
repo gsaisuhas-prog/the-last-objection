@@ -1,0 +1,104 @@
+{
+  "game_title": "The Last Objection",
+  "synopsis": "A legal mystery adventure where the Judge's son uncovers how prosecutor Kaizen swapped a palladium implant for a lethal pure iron tooth to murder Judge Vance inside a 3.0T MRI scanner.",
+  "locations": [
+    {
+      "id": "office",
+      "name": "Vance Law Offices",
+      "district": "Central Civic Quarter",
+      "clues": [
+        "mercer_dossier"
+      ]
+    },
+    {
+      "id": "overworld",
+      "name": "Veridia Legal District",
+      "district": "Town Plaza & Connecting Thoroughfares",
+      "clues": []
+    },
+    {
+      "id": "hospital",
+      "name": "Metro Memorial Hospital - MRI Radiology Wing",
+      "district": "Northwest Medical Center",
+      "clues": [
+        "mri_report"
+      ]
+    },
+    {
+      "id": "clinic",
+      "name": "Dr. Aris Family Dental Practice",
+      "district": "Northeast Healthcare Plaza",
+      "clues": [
+        "dentist_invoice",
+        "clinic_cctv"
+      ]
+    },
+    {
+      "id": "atm_kiosk",
+      "name": "Commercial Bank & 24/7 ATM",
+      "district": "Southeast Financial Corner",
+      "clues": [
+        "atm_footage"
+      ]
+    },
+    {
+      "id": "safehouse",
+      "name": "Abandoned Safehouse",
+      "district": "Southwest Industrial Quays",
+      "clues": [
+        "stolen_tooth",
+        "wire_receipt"
+      ]
+    },
+    {
+      "id": "courtroom",
+      "name": "Supreme Courtroom - Chamber VIII",
+      "district": "High Palace of Justice",
+      "clues": []
+    }
+  ],
+  "evidence_dossier": [
+    {
+      "id": "mercer_dossier",
+      "title": "State v. Mercer Case File (Kaizen's Motive)",
+      "location": "Father's Study Archives",
+      "summary": "Transcript proving Judge Vance disbarred Kaizen Mercer for manufacturing fake testimony in his career-defining case. Kaizen vowed revenge on the public record."
+    },
+    {
+      "id": "mri_report",
+      "title": "MRI Ballistics & Iron Analysis",
+      "location": "Memorial Hospital (Radiology Wing)",
+      "summary": "Autopsy report confirming the lethal projectile was a 100% pure ferromagnetic iron molar that ripped into the skull at 45 m/s when the 3.0T magnet energized."
+    },
+    {
+      "id": "dentist_invoice",
+      "title": "Dr. Aris's Palladium Purchase Invoice",
+      "location": "Dr. Aris Dental Practice",
+      "summary": "Official invoice from Zurich Biomaterials showing Dr. Aris ordered a certified non-magnetic Palladium-100 crown. The clinic never stocked iron."
+    },
+    {
+      "id": "clinic_cctv",
+      "title": "Tampered Clinic CCTV Log (4-Min Loop)",
+      "location": "Dental Clinic Security DVR",
+      "summary": "Security analysis showing internal camera footage was patched into a repeating 4-minute loop between 3:10 and 3:30 AM to mask an unauthorized break-in."
+    },
+    {
+      "id": "atm_footage",
+      "title": "ATM Surveillance Snapshot (Plate #7X-904)",
+      "location": "Commercial Bank ATM Terminal",
+      "summary": "Bank street camera recording of an unmarked black sedan in the clinic alley at 3:15 AM. Plate #7X-904 traced to an abandoned warehouse in the industrial docks."
+    },
+    {
+      "id": "stolen_tooth",
+      "title": "The Genuine Palladium Tooth Crown",
+      "location": "Safehouse Locked Strongbox",
+      "summary": "The authentic Swiss palladium-alloy crown crafted for Judge Vance, stamped with Dr. Aris's serial #P-992. Found in the burglar's hideout."
+    },
+    {
+      "id": "wire_receipt",
+      "title": "$250,000 Offshore Wire Transfer Receipt",
+      "location": "Safehouse Burglar Workdesk",
+      "summary": "Bank confirmation slip proving $250,000 wired to the deceased burglar from Kaizen Mercer's private legal escrow, with instructions to swap the crown and vanish."
+    }
+  ]
+}

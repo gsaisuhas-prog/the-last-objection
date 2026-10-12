@@ -1,0 +1,3552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Last Objection - Courtroom & Detective Adventure</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: #060408;
+    color: #e2e8f0;
+    font-family: 'Courier Prime', 'Courier New', monospace;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* Main Viewport Container */
+  #viewport {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    max-width: 1200px;
+    max-height: 820px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 0 2px #2b170e;
+    background: #09070d;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Scanline CRT Overlay */
+  .crt-scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    pointer-events: none;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.22) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.02));
+    background-size: 100% 3px, 6px 100%;
+    display: block;
+  }
+
+  /* Gavel Strike Flash */
+  #gavel-flash {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    background: #ffffff;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease-out;
+  }
+
+  /* ================= TITLE SCREEN ================= */
+  #title-screen {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s ease-in-out;
+    background: radial-gradient(circle at 18% 70%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 75% 35%, rgba(220, 38, 38, 0.06) 0%, transparent 55%),
+                #0b080e;
+  }
+
+  #title-screen.fade-out {
+    opacity: 0;
+    transform: scale(1.04);
+    pointer-events: none;
+  }
+
+  #title-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .vignette-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(5, 3, 7, 0.75) 85%, #050308 100%);
+    box-shadow: inset 0 0 120px rgba(0,0,0,0.85);
+  }
+
+  .title-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px 20px;
+    pointer-events: none;
+  }
+
+  .title-brand {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: auto;
+  }
+
+  .title-eyebrow {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 14px;
+    letter-spacing: 12px;
+    color: #cbd5e1;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+  }
+
+  .logo-block {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 0.95;
+  }
+
+  .word-last {
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: 900;
+    font-size: clamp(44px, 7.5vw, 80px);
+    letter-spacing: 6px;
+    color: #f1f5f9;
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.9), 2px 4px 15px rgba(0, 0, 0, 0.95);
+  }
+
+  .word-objection-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .word-objection {
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: 900;
+    font-size: clamp(34px, 6.2vw, 70px);
+    letter-spacing: 6px;
+    color: #e2e8f0;
+    text-shadow: 0 0 25px rgba(0,0,0,0.95), 3px 6px 18px rgba(0,0,0,0.9);
+  }
+
+  .red-strike {
+    position: absolute;
+    top: 50%;
+    left: -40px;
+    right: -40px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, #ef4444 15%, #b91c1c 85%, transparent 100%);
+    box-shadow: 0 0 10px #dc2626, 0 0 20px #ef4444;
+    transform: translateY(-50%) rotate(-1.5deg);
+    pointer-events: none;
+    z-index: 12;
+  }
+
+  .crosshair-o {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+  }
+
+  .crosshair-target {
+    position: absolute;
+    width: clamp(44px, 6.5vw, 72px);
+    height: clamp(44px, 6.5vw, 72px);
+    border: 2px solid #ef4444;
+    border-radius: 50%;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.75), inset 0 0 8px rgba(239, 68, 68, 0.5);
+    pointer-events: none;
+  }
+
+  .crosshair-target::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    bottom: -10px;
+    left: 50%;
+    width: 2px;
+    background: #ef4444;
+    transform: translateX(-50%);
+    box-shadow: 0 0 6px #ef4444;
+  }
+
+  .crosshair-target::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    right: -10px;
+    top: 50%;
+    height: 2px;
+    background: #ef4444;
+    transform: translateY(-50%);
+    box-shadow: 0 0 6px #ef4444;
+  }
+
+  .title-tagline {
+    font-size: 13px;
+    color: #facc15;
+    letter-spacing: 2px;
+    margin-top: 8px;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  }
+
+  .title-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 290px;
+    margin-top: 16px;
+    pointer-events: auto;
+  }
+
+  .menu-btn {
+    position: relative;
+    background: rgba(22, 14, 28, 0.6);
+    border: 1px solid #452414;
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 14px;
+    letter-spacing: 4px;
+    color: #cbd5e1;
+    padding: 9px 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
+    border-radius: 4px;
+  }
+
+  .menu-btn:hover, .menu-btn.active {
+    color: #ffffff;
+    background: rgba(69, 36, 20, 0.85);
+    border-color: #ef4444;
+    text-shadow: 0 0 10px #f87171;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .menu-btn.primary {
+    color: #fef08a;
+    border-color: #b45309;
+    font-weight: 700;
+  }
+
+  .title-hint {
+    margin-top: 20px;
+    font-size: 11px;
+    color: #94a3b8;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .sticky-note {
+    position: absolute;
+    bottom: 30px;
+    left: 36px;
+    width: 170px;
+    background: #fef08a;
+    color: #451a03;
+    padding: 12px 10px;
+    font-size: 11px;
+    line-height: 1.4;
+    font-family: 'Courier Prime', monospace;
+    font-style: italic;
+    box-shadow: 2px 6px 16px rgba(0, 0, 0, 0.85);
+    transform: rotate(-3deg);
+    border-top: 5px solid rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    z-index: 15;
+  }
+
+  .sticky-note::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 12px;
+    background: rgba(220, 38, 38, 0.85);
+  }
+
+  /* ================= IN-GAME APP LAYOUT ================= */
+  #game-app {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    background: #09060c;
+  }
+
+  .top-hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #140d1a;
+    border-bottom: 2px solid #3f2214;
+    padding: 6px 14px;
+    font-size: 12px;
+    z-index: 20;
+    gap: 8px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.7);
+  }
+
+  .hud-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hud-badge {
+    background: #281622;
+    border: 1px solid #7c2d12;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: bold;
+    color: #facc15;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .hud-quest {
+    color: #cbd5e1;
+    font-size: 11px;
+    background: rgba(15, 23, 42, 0.7);
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    max-width: 440px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .hud-quest b {
+    color: #38bdf8;
+  }
+
+  .hud-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .hud-btn {
+    background: #2c161f;
+    border: 1px solid #6c2e0b;
+    color: #fef08a;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'Cinzel', Georgia, serif;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .hud-btn:hover {
+    background: #4a2113;
+    border-color: #facc15;
+    color: #ffffff;
+    box-shadow: 0 0 6px rgba(250, 204, 21, 0.4);
+  }
+
+  .clue-count-pill {
+    background: #ef4444;
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 8px;
+    font-size: 10px;
+  }
+
+  .canvas-stage {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #060408;
+    overflow: hidden;
+  }
+
+  #mainCanvas {
+    background: #09070d;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+    border: 2px solid #2d1810;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  #location-banner {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(14, 9, 20, 0.92);
+    border: 2px solid #d97706;
+    color: #fef08a;
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: bold;
+    font-size: 15px;
+    letter-spacing: 4px;
+    padding: 6px 24px;
+    border-radius: 6px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.8);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 25;
+  }
+
+  #location-banner.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(5px);
+  }
+
+  /* Pokemon Red Bottom Dialogue Box */
+  .pokemon-dialogue-pane {
+    position: relative;
+    width: 100%;
+    min-height: 110px;
+    max-height: 130px;
+    background: #140d08;
+    border-top: 3px solid #78350f;
+    padding: 10px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: inset 0 2px 12px rgba(0,0,0,0.8);
+    z-index: 20;
+  }
+
+  .dialogue-header-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #522d14;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+  }
+
+  .dialogue-speaker-name {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    color: #facc15;
+    text-transform: uppercase;
+  }
+
+  .dialogue-sub-hint {
+    font-size: 10px;
+    color: #94a3b8;
+    letter-spacing: 1px;
+  }
+
+  .dialogue-text-body {
+    font-size: 14px;
+    line-height: 1.45;
+    color: #fef3c7;
+    flex: 1;
+    font-weight: 500;
+  }
+
+  .dialogue-caret {
+    align-self: flex-end;
+    font-size: 12px;
+    color: #f59e0b;
+    animation: bounceCaret 0.8s infinite alternate;
+  }
+
+  @keyframes bounceCaret {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(4px); }
+  }
+
+  .dialogue-choices {
+    display: none;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .dialogue-choices.active {
+    display: flex;
+  }
+
+  .choice-btn {
+    background: #3b190f;
+    border: 1px solid #b45309;
+    color: #fef08a;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+  }
+
+  .choice-btn:hover {
+    background: #6c2e0b;
+    border-color: #fde047;
+    color: #ffffff;
+    box-shadow: 0 0 8px rgba(253, 224, 71, 0.4);
+  }
+
+  /* Mobile Touch D-Pad */
+  .touch-dpad-bar {
+    display: none;
+    background: #110915;
+    border-top: 1px solid #3d2112;
+    padding: 6px 12px;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 22;
+  }
+
+  @media (max-width: 768px) {
+    .touch-dpad-bar { display: flex; }
+  }
+
+  .dpad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 38px);
+    grid-template-rows: repeat(3, 36px);
+    gap: 2px;
+  }
+
+  .dpad-btn {
+    background: #2c1a2e;
+    border: 1px solid #57314d;
+    color: #fef08a;
+    font-weight: bold;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    user-select: none;
+  }
+
+  .touch-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .touch-act-btn {
+    width: 60px;
+    height: 48px;
+    background: #452414;
+    border: 2px solid #92400e;
+    color: #fde047;
+    border-radius: 6px;
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: bold;
+    font-size: 12px;
+  }
+
+  /* ================= MODALS ================= */
+  .game-modal-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 70;
+    background: rgba(6, 4, 10, 0.9);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .game-modal-overlay.open {
+    display: flex;
+  }
+
+  .modal-window {
+    background: #17101c;
+    border: 2px solid #854d0e;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 820px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.95);
+    overflow: hidden;
+  }
+
+  .modal-topbar {
+    background: #241411;
+    border-bottom: 2px solid #633215;
+    padding: 10px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-headline {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: #facc15;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .modal-close-x {
+    cursor: pointer;
+    font-size: 18px;
+    color: #94a3b8;
+    padding: 2px 6px;
+  }
+
+  .modal-close-x:hover { color: #f87171; }
+
+  .modal-inner-scroll {
+    padding: 16px 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  /* Evidence Bag UI */
+  .bag-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 16px;
+  }
+
+  @media (max-width: 650px) {
+    .bag-layout { grid-template-columns: 1fr; }
+  }
+
+  .clue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 480px;
+    overflow-y: auto;
+    padding-right: 6px;
+  }
+
+  .clue-item-card {
+    background: #1f1426;
+    border: 1px solid #4a2745;
+    border-radius: 6px;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .clue-item-card:hover, .clue-item-card.selected {
+    background: #3c1e2b;
+    border-color: #facc15;
+    box-shadow: 0 0 8px rgba(250, 204, 21, 0.35);
+  }
+
+  .clue-item-card.locked {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-style: dashed;
+  }
+
+  .clue-icon-box {
+    width: 36px;
+    height: 36px;
+    background: #0f0914;
+    border: 1px solid #6b21a8;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .clue-meta-col {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .clue-title-text {
+    font-size: 12px;
+    font-weight: bold;
+    color: #f1f5f9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .clue-source-tag {
+    font-size: 10px;
+    color: #fbbf24;
+    margin-top: 2px;
+  }
+
+  .clue-inspect-pane {
+    background: #110b17;
+    border: 2px solid #573322;
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .inspect-clue-header {
+    border-bottom: 1px solid #3d2112;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+
+  .inspect-title {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 16px;
+    color: #fde047;
+    font-weight: bold;
+  }
+
+  .inspect-loc {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+
+  .inspect-body-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #e2e8f0;
+    flex: 1;
+  }
+
+  .inspect-significance {
+    margin-top: 14px;
+    background: rgba(120, 53, 15, 0.25);
+    border-left: 3px solid #f59e0b;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #fef08a;
+  }
+
+  .btn-present-clue {
+    margin-top: 14px;
+    padding: 10px;
+    background: #b91c1c;
+    border: 1px solid #f87171;
+    color: #ffffff;
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: none;
+    text-align: center;
+  }
+
+  .btn-present-clue.visible {
+    display: block;
+  }
+
+  .btn-present-clue:hover {
+    background: #dc2626;
+    box-shadow: 0 0 12px #ef4444;
+  }
+
+  /* Town Map UI */
+  .town-map-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 650px) {
+    .town-map-grid { grid-template-columns: 1fr; }
+  }
+
+  .map-loc-card {
+    background: #1c1322;
+    border: 2px solid #57311c;
+    border-radius: 6px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .map-loc-card:hover {
+    background: #3b1b2b;
+    border-color: #facc15;
+    transform: translateY(-2px);
+  }
+
+  .map-loc-card.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-style: dashed;
+  }
+
+  .map-loc-title {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 13px;
+    font-weight: bold;
+    color: #fde047;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .map-loc-desc {
+    font-size: 11px;
+    color: #cbd5e1;
+    line-height: 1.4;
+  }
+
+  .map-loc-status {
+    font-size: 10px;
+    font-weight: bold;
+    color: #4ade80;
+    margin-top: 4px;
+  }
+
+  /* ================= COURTROOM BATTLE ================= */
+  #court-battle-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    background: #09060f;
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  #court-battle-overlay.active {
+    display: flex;
+  }
+
+  .battle-header-bar {
+    background: #190e21;
+    border-bottom: 2px solid #7c2d12;
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+  }
+
+  .trial-title-tag {
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: bold;
+    font-size: 14px;
+    color: #facc15;
+    letter-spacing: 1px;
+  }
+
+  .credibility-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .credibility-label {
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #e2e8f0;
+  }
+
+  .credibility-bar-track {
+    width: 220px;
+    height: 16px;
+    background: #2b1219;
+    border: 1px solid #7f1d1d;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .credibility-bar-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #ef4444, #f59e0b 40%, #22c55e 100%);
+    transition: width 0.4s ease;
+  }
+
+  .battle-stage-arena {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: radial-gradient(circle at 50% 30%, #1e1329 0%, #08050e 85%);
+    overflow: hidden;
+    padding: 10px;
+  }
+
+  .bench-actor-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 5;
+    width: 280px;
+  }
+
+  .actor-portrait-card {
+    width: 160px;
+    height: 160px;
+    border: 3px solid #854d0e;
+    background: #140d1c;
+    border-radius: 8px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .actor-name-banner {
+    margin-top: 8px;
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: bold;
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: #fef08a;
+    background: rgba(30, 16, 26, 0.9);
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid #573124;
+  }
+
+  .actor-role-sub {
+    font-size: 10px;
+    color: #94a3b8;
+    margin-top: 2px;
+    text-transform: uppercase;
+  }
+
+  .podium-furniture {
+    width: 220px;
+    height: 48px;
+    background: #3f1a08;
+    border: 2px solid #78350f;
+    border-radius: 4px;
+    margin-top: -12px;
+    z-index: 6;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.85);
+  }
+
+  .judge-center-dias {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 4;
+  }
+
+  .judge-mini-portrait {
+    width: 90px;
+    height: 90px;
+    background: #130a1c;
+    border: 2px solid #ca8a04;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .judge-name-pill {
+    font-family: 'Cinzel', Georgia, serif;
+    font-size: 11px;
+    color: #facc15;
+    font-weight: bold;
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+
+  #objection-splash {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(220, 38, 38, 0.25);
+    pointer-events: none;
+  }
+
+  #objection-splash.burst {
+    display: flex;
+    animation: objectionShake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+  }
+
+  .objection-shout-balloon {
+    background: #dc2626;
+    color: #ffffff;
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: 900;
+    font-size: clamp(38px, 8vw, 76px);
+    letter-spacing: 6px;
+    padding: 14px 40px;
+    border: 4px solid #fef08a;
+    border-radius: 12px;
+    box-shadow: 0 0 50px #ef4444, inset 0 0 20px #7f1d1d;
+    transform: rotate(-3deg) scale(1.1);
+    text-shadow: 2px 4px 12px rgba(0,0,0,0.9);
+  }
+
+  @keyframes objectionShake {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(4px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+    40%, 60% { transform: translate3d(8px, 0, 0); }
+  }
+
+  .battle-bottom-pane {
+    background: #160c07;
+    border-top: 3px solid #78350f;
+    padding: 12px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10;
+  }
+
+  .testimony-display-box {
+    background: #20120b;
+    border: 1px solid #57311c;
+    border-radius: 4px;
+    padding: 10px 14px;
+    min-height: 58px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #fef3c7;
+    font-weight: 500;
+  }
+
+  .battle-actions-row {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  .battle-btn {
+    background: #3b190f;
+    border: 2px solid #92400e;
+    color: #fef08a;
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 8px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+  }
+
+  .battle-btn:hover {
+    background: #5c2409;
+    border-color: #fde047;
+    box-shadow: 0 0 10px rgba(253, 224, 71, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .battle-btn.present-red {
+    background: #991b1b;
+    border-color: #ef4444;
+    color: #ffffff;
+  }
+
+  .battle-btn.present-red:hover {
+    background: #dc2626;
+    box-shadow: 0 0 12px #ef4444;
+  }
+
+  #verdict-modal {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    background: rgba(4, 2, 7, 0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  #verdict-modal.show {
+    display: flex;
+  }
+
+  .verdict-box {
+    background: #170d1a;
+    border: 3px solid #78350f;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 100%;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.95);
+  }
+
+  .verdict-gavel-icon {
+    font-size: 44px;
+    margin-bottom: 12px;
+  }
+
+  .verdict-stamp {
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: 900;
+    font-size: 26px;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .verdict-stamp.guilty-win {
+    color: #22c55e;
+    text-shadow: 0 0 16px rgba(34, 197, 94, 0.6);
+  }
+
+  .verdict-stamp.defeat-jail {
+    color: #ef4444;
+    text-shadow: 0 0 16px rgba(239, 68, 68, 0.7);
+  }
+
+  .verdict-story-p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #e2e8f0;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
+  .verdict-action-btn {
+    padding: 10px 24px;
+    background: #78350f;
+    border: 1px solid #fde047;
+    color: #fef08a;
+    font-family: 'Cinzel', Georgia, serif;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .verdict-action-btn:hover {
+    background: #92400e;
+    box-shadow: 0 0 12px rgba(253, 224, 71, 0.5);
+  }
+</style>
+</head>
+<body>
+
+<div id="viewport">
+  <div id="crtOverlay" class="crt-scanlines"></div>
+  <div id="gavel-flash"></div>
+
+  <!-- TITLE SCREEN -->
+  <div id="title-screen">
+    <canvas id="title-canvas"></canvas>
+    <div class="vignette-overlay"></div>
+
+    <div class="sticky-note">
+      "Truth isn't always obvious."<br>
+      <span style="font-size:10px; color:#78350f; display:block; margin-top:4px;">— Case File #03: State v. Vance</span>
+    </div>
+
+    <div class="title-content">
+      <div class="title-brand">
+        <div class="title-eyebrow">A LEGAL DETECTIVE ADVENTURE</div>
+        <div class="logo-block">
+          <div class="word-last">LAST</div>
+          <div class="word-objection-container">
+            <div class="red-strike"></div>
+            <div class="word-objection">
+              <span class="crosshair-o">
+                O
+                <div class="crosshair-target"></div>
+              </span>BJECTION
+            </div>
+          </div>
+        </div>
+        <div class="title-tagline">THE MRI IMPLANT CONSPIRACY</div>
+      </div>
+
+      <div class="title-menu" id="menuContainer">
+        <button class="menu-btn primary active" data-action="newgame" id="btnNewGame">NEW INVESTIGATION</button>
+        <button class="menu-btn" data-action="continue" id="btnContinue">CONTINUE CASE</button>
+        <button class="menu-btn" data-action="evidence" id="btnTitleEvidence">EVIDENCE DOSSIER</button>
+        <button class="menu-btn" data-action="courtroom" id="btnTitleCourt">COURTROOM SHOWDOWN</button>
+        <button class="menu-btn" data-action="settings" id="btnSettings">SETTINGS</button>
+      </div>
+
+      <div class="title-hint">
+        Navigate: <b>WASD / Arrow Keys</b> · Select: <b>[ENTER] or [SPACE]</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN IN-GAME APPLICATION -->
+  <div id="game-app">
+    <div class="top-hud">
+      <div class="hud-left">
+        <div class="hud-badge" id="hudLocationBadge">📍 VANCE LAW OFFICES</div>
+        <div class="hud-quest" id="hudQuestBanner">MISSION: <b>Inspect Father's Study & Visit Memorial Hospital</b></div>
+      </div>
+      <div class="hud-actions">
+        <button class="hud-btn" id="btnOpenBag">
+          💼 EVIDENCE <span class="clue-count-pill" id="bagCountPill">0/7</span> [B]
+        </button>
+        <button class="hud-btn" id="btnOpenMap">
+          🗺 TOWN MAP [M]
+        </button>
+        <button class="hud-btn" id="btnToggleAudio">
+          🔊 AUDIO
+        </button>
+        <button class="hud-btn" id="btnReturnToTitle">
+          TITLE [ESC]
+        </button>
+      </div>
+    </div>
+
+    <div class="canvas-stage">
+      <div id="location-banner">VANCE LAW OFFICES</div>
+      <canvas id="mainCanvas" width="800" height="480"></canvas>
+    </div>
+
+    <!-- Bottom Pokemon Red Style Dialogue Box -->
+    <div class="pokemon-dialogue-pane">
+      <div class="dialogue-header-line">
+        <span class="dialogue-speaker-name" id="speakerLabel">JUSTIN VANCE (DEFENSE COUNSEL)</span>
+        <span class="dialogue-sub-hint">[SPACE] or [E] Advance · [B] Bag · [M] Map</span>
+      </div>
+      <div class="dialogue-text-body" id="dialogueText">
+        My father, Judge Lawrence Vance, was killed inside the hospital's MRI scanner... Dr. Aris is accused, but my father trusted him for decades. I need to find the truth before the trial begins.
+      </div>
+      <div class="dialogue-choices" id="dialogueChoices"></div>
+      <div class="dialogue-caret">▼</div>
+    </div>
+
+    <!-- Mobile Touch Controls -->
+    <div class="touch-dpad-bar">
+      <div class="dpad-grid">
+        <div></div>
+        <button class="dpad-btn" id="btnDpadUp">▲</button>
+        <div></div>
+        <button class="dpad-btn" id="btnDpadLeft">◀</button>
+        <div></div>
+        <button class="dpad-btn" id="btnDpadRight">▶</button>
+        <div></div>
+        <button class="dpad-btn" id="btnDpadDown">▼</button>
+        <div></div>
+      </div>
+      <div class="touch-actions">
+        <button class="touch-act-btn" id="btnTouchInteract">A: EXAM</button>
+        <button class="touch-act-btn" id="btnTouchBag">B: BAG</button>
+        <button class="touch-act-btn" id="btnTouchMap">M: MAP</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVIDENCE BAG MODAL -->
+  <div class="game-modal-overlay" id="modalEvidenceBag">
+    <div class="modal-window">
+      <div class="modal-topbar">
+        <div class="modal-headline">💼 COURT EVIDENCE DOSSIER · KEY CLUES</div>
+        <div class="modal-close-x" id="btnCloseBag">✕</div>
+      </div>
+      <div class="modal-inner-scroll">
+        <div class="bag-layout">
+          <div class="clue-list" id="clueListContainer"></div>
+          <div class="clue-inspect-pane">
+            <div>
+              <div class="inspect-clue-header">
+                <div class="inspect-title" id="inspectClueTitle">SELECT AN EVIDENCE ITEM</div>
+                <div class="inspect-loc" id="inspectClueSource">Discovery Location: ---</div>
+              </div>
+              <div class="inspect-body-text" id="inspectClueBody">
+                Click on any acquired evidence in your briefcase to examine the forensics, transcripts, and witness notes.
+              </div>
+              <div class="inspect-significance" id="inspectClueSignificance">
+                <b>LEGAL SIGNIFICANCE:</b> Gather all 7 key clues before confronting Kaizen in the Supreme Courtroom.
+              </div>
+            </div>
+            <button class="btn-present-clue" id="btnPresentCurrentClue">⚡ PRESENT THIS EVIDENCE IN COURT</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOWN MAP MODAL -->
+  <div class="game-modal-overlay" id="modalTownMap">
+    <div class="modal-window" style="max-width: 720px;">
+      <div class="modal-topbar">
+        <div class="modal-headline">🗺 VERIDIA LEGAL DISTRICT · TOWN DIRECTORY</div>
+        <div class="modal-close-x" id="btnCloseMap">✕</div>
+      </div>
+      <div class="modal-inner-scroll">
+        <p style="font-size:12px; color:#cbd5e1; margin-bottom:10px;">
+          Select a verified destination to fast-travel immediately or consult local coordinates:
+        </p>
+        <div class="town-map-grid" id="townMapGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COURTROOM BATTLE OVERLAY -->
+  <div id="court-battle-overlay">
+    <div id="objection-splash">
+      <div class="objection-shout-balloon">OBJECTION!</div>
+    </div>
+
+    <div class="battle-header-bar">
+      <div class="trial-title-tag">⚖ STATE v. DR. ARIS · THE FINAL OBJECTION</div>
+      <div class="credibility-wrap">
+        <span class="credibility-label">JUDICIAL CREDIBILITY:</span>
+        <div class="credibility-bar-track">
+          <div class="credibility-bar-fill" id="battleCredibilityBar"></div>
+        </div>
+        <span style="font-size: 11px; font-weight:bold; color:#facc15;" id="battleCredibilityVal">100%</span>
+      </div>
+    </div>
+
+    <div class="battle-stage-arena">
+      <div class="judge-center-dias">
+        <div class="judge-mini-portrait" id="battleJudgePortrait"></div>
+        <div class="judge-name-pill">CHIEF JUSTICE STERLING</div>
+      </div>
+
+      <div class="bench-actor-side">
+        <div class="actor-portrait-card" id="defensePortraitCard"></div>
+        <div class="podium-furniture"></div>
+        <div class="actor-name-banner">JUSTIN VANCE</div>
+        <div class="actor-role-sub">DEFENSE COUNSEL · JUDGE'S SON</div>
+      </div>
+
+      <div class="bench-actor-side">
+        <div class="actor-portrait-card" id="prosecutorPortraitCard"></div>
+        <div class="podium-furniture"></div>
+        <div class="actor-name-banner" id="kaizenNameBanner">KAIZEN MERCER</div>
+        <div class="actor-role-sub" id="kaizenMoodSub">PROSECUTING ATTORNEY · CONFIDENT</div>
+      </div>
+    </div>
+
+    <div class="battle-bottom-pane">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:11px; font-weight:bold; color:#fde047;" id="testimonyPhaseTag">TESTIMONY: PHASE 1 OF 4</span>
+        <span style="font-size:11px; color:#94a3b8;">Find the fatal contradiction in Kaizen's statement!</span>
+      </div>
+      <div class="testimony-display-box" id="testimonyTextDisplay">
+        Kaizen: "Dr. Aris intentionally installed an iron tooth knowing Judge Vance had his annual MRI scheduled. It was deliberate murder by the family dentist!"
+      </div>
+      <div class="battle-actions-row">
+        <button class="battle-btn" id="btnBattlePress">PRESS STATEMENT [P]</button>
+        <button class="battle-btn present-red" id="btnBattlePresent">⚡ PRESENT EVIDENCE [E]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERDICT MODAL -->
+  <div id="verdict-modal">
+    <div class="verdict-box">
+      <div class="verdict-gavel-icon">⚖</div>
+      <div class="verdict-stamp" id="verdictStamp">LIFE IMPRISONMENT</div>
+      <div class="verdict-story-p" id="verdictStoryText"></div>
+      <button class="verdict-action-btn" id="btnVerdictRestart">PLAY AGAIN / RESTART</button>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="game-modal-overlay" id="modalSettings">
+    <div class="modal-window" style="max-width: 480px;">
+      <div class="modal-topbar">
+        <div class="modal-headline">⚙ GAME SETTINGS</div>
+        <div class="modal-close-x" id="btnCloseSettings">✕</div>
+      </div>
+      <div class="modal-inner-scroll">
+        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #33211b;">
+            <span>Chiptune BGM & Sound FX</span>
+            <button class="hud-btn" id="toggleAudioBtn">ENABLED</button>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #33211b;">
+            <span>CRT Scanline Overlay</span>
+            <button class="hud-btn" id="toggleCrtBtn">ACTIVE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== AUDIO ENGINE ====================
+const AudioEngine = {
+  ctx: null,
+  enabled: true,
+  currentBgm: null,
+  bgmInterval: null,
+  bgmStep: 0,
+
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new AudioCtx();
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  },
+
+  playBlip() {
+    if (!this.enabled) return;
+    this.init();
+    try {
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(480, t);
+      osc.frequency.exponentialRampToValueAtTime(240, t + 0.04);
+      gain.gain.setValueAtTime(0.08, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.04);
+    } catch(e) {}
+  },
+
+  playGavel() {
+    if (!this.enabled) return;
+    this.init();
+    try {
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(160, now);
+      osc.frequency.exponentialRampToValueAtTime(30, now + 0.45);
+      gain.gain.setValueAtTime(0.85, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.5);
+
+      const snap = this.ctx.createOscillator();
+      const snapGain = this.ctx.createGain();
+      snap.type = 'square';
+      snap.frequency.setValueAtTime(900, now);
+      snap.frequency.exponentialRampToValueAtTime(120, now + 0.06);
+      snapGain.gain.setValueAtTime(0.4, now);
+      snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+      snap.connect(snapGain);
+      snapGain.connect(this.ctx.destination);
+      snap.start(now);
+      snap.stop(now + 0.07);
+    } catch(e) {}
+  },
+
+  playWarp() {
+    if (!this.enabled) return;
+    this.init();
+    try {
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(260, t);
+      osc.frequency.linearRampToValueAtTime(620, t + 0.16);
+      gain.gain.setValueAtTime(0.15, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.18);
+    } catch(e) {}
+  },
+
+  playItemClue() {
+    if (!this.enabled) return;
+    this.init();
+    try {
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, idx) => {
+        const t = this.ctx.currentTime + idx * 0.09;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(freq, t);
+        gain.gain.setValueAtTime(0.12, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.18);
+      });
+    } catch(e) {}
+  },
+
+  playObjectionHit() {
+    if (!this.enabled) return;
+    this.init();
+    try {
+      const now = this.ctx.currentTime;
+      const chords = [220, 277.18, 329.63, 440, 880];
+      chords.forEach(f => {
+        const osc = this.ctx.createOscillator();
+        const g = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(f, now);
+        osc.frequency.exponentialRampToValueAtTime(f * 0.85, now + 0.45);
+        g.gain.setValueAtTime(0.2, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc.connect(g);
+        g.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      });
+      this.playGavel();
+    } catch(e) {}
+  },
+
+  playPenaltyError() {
+    if (!this.enabled) return;
+    this.init();
+    try {
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(140, t);
+      osc.frequency.setValueAtTime(110, t + 0.12);
+      gain.gain.setValueAtTime(0.25, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.35);
+    } catch(e) {}
+  },
+
+  playVictoryFanfare() {
+    if (!this.enabled) return;
+    this.init();
+    try {
+      const melody = [523.25, 523.25, 523.25, 523.25, 415.3, 466.16, 523.25, 0, 466.16, 523.25];
+      const times = [0.12, 0.12, 0.12, 0.28, 0.24, 0.24, 0.3, 0.08, 0.2, 0.6];
+      let cur = this.ctx.currentTime;
+      melody.forEach((freq, idx) => {
+        const dur = times[idx];
+        if (freq > 0) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, cur);
+          gain.gain.setValueAtTime(0.18, cur);
+          gain.gain.exponentialRampToValueAtTime(0.001, cur + dur);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(cur);
+          osc.stop(cur + dur);
+        }
+        cur += dur;
+      });
+    } catch(e) {}
+  },
+
+  startBgm(type) {
+    if (!this.enabled) return;
+    if (this.currentBgm === type) return;
+    this.stopBgm();
+    this.init();
+    this.currentBgm = type;
+    this.bgmStep = 0;
+
+    const overworldNotes = [
+      261.63, 329.63, 392.00, 523.25, 392.00, 329.63,
+      220.00, 261.63, 329.63, 440.00, 329.63, 261.63,
+      196.00, 246.94, 293.66, 392.00, 293.66, 246.94,
+      174.61, 220.00, 261.63, 349.23, 261.63, 220.00
+    ];
+
+    const courtNotes = [
+      146.83, 220.00, 293.66, 349.23, 293.66, 220.00,
+      130.81, 196.00, 261.63, 311.13, 261.63, 196.00,
+      116.54, 174.61, 233.08, 293.66, 233.08, 174.61,
+      110.00, 164.81, 220.00, 277.18, 220.00, 164.81
+    ];
+
+    const notes = (type === 'court') ? courtNotes : overworldNotes;
+    const tempo = (type === 'court') ? 140 : 180;
+
+    this.bgmInterval = setInterval(() => {
+      if (!this.enabled || !this.ctx) return;
+      try {
+        const now = this.ctx.currentTime;
+        const freq = notes[this.bgmStep % notes.length];
+        this.bgmStep++;
+
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = (type === 'court') ? 'sawtooth' : 'square';
+        osc.frequency.setValueAtTime(freq, now);
+
+        gain.gain.setValueAtTime((type === 'court') ? 0.05 : 0.035, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + (tempo / 1000) * 0.85);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + (tempo / 1000) * 0.9);
+      } catch(e) {}
+    }, tempo);
+  },
+
+  stopBgm() {
+    if (this.bgmInterval) {
+      clearInterval(this.bgmInterval);
+      this.bgmInterval = null;
+    }
+    this.currentBgm = null;
+  }
+};
+
+// ==================== PIXEL SPRITES DATA ====================
+const lawyerSprites = {
+  down_idle: [
+    "....OOOOOO......",
+    "..OOHHHHHHOO....",
+    ".OHHHHHHHHHHO...",
+    ".OHHSSSSHSHHO...",
+    "OHHESSEESSEHHO..",
+    "OHHSSSSSSSSSH...",
+    ".OHHSSSSSSSH....",
+    "...OOWWWWOO.....",
+    "..OJOWTTWOJO....",
+    "..JJOWTTWOJJB...",
+    "..JJOOTTOJJJBB..",
+    "..JJOOOOJJJ..B..",
+    "...OOPPPOO......",
+    "...OOPPPOO......",
+    "...OOPPPOO......",
+    "...OOOOOO......."
+  ],
+  down_walk1: [
+    "....OOOOOO......",
+    "..OOHHHHHHOO....",
+    ".OHHHHHHHHHHO...",
+    ".OHHSSSSHSHHO...",
+    "OHHESSEESSEHHO..",
+    "OHHSSSSSSSSSH...",
+    ".OHHSSSSSSSH....",
+    "...OOWWWWOO.....",
+    "..OJOWTTWOJO....",
+    "..JJOWTTWOJJB...",
+    "..JJOOTTOJJJBB..",
+    "..JJOOOOJJJ..B..",
+    "...OOP..OO......",
+    "...OOP..PP......",
+    "...OOP..PP......",
+    "...OOO..OO......"
+  ],
+  down_walk2: [
+    "....OOOOOO......",
+    "..OOHHHHHHOO....",
+    ".OHHHHHHHHHHO...",
+    ".OHHSSSSHSHHO...",
+    "OHHESSEESSEHHO..",
+    "OHHSSSSSSSSSH...",
+    ".OHHSSSSSSSH....",
+    "...OOWWWWOO.....",
+    "..OJOWTTWOJO....",
+    "..JJOWTTWOJJB...",
+    "..JJOOTTOJJJBB..",
+    "..JJOOOOJJJ..B..",
+    "....OO..POO.....",
+    "...PP...POO.....",
+    "...PP...POO.....",
+    "...OO...OOO....."
+  ],
+  up_idle: [
+    "....OOOOOO......",
+    "..OOHHHHHHOO....",
+    ".OHHHHHHHHHHO...",
+    ".OHHHHHHHHHHO...",
+    "OHHHHHHHHHHHHO..",
+    "OHHHHHHHHHHHH...",
+    ".OHHHHHHHHHH....",
+    "...OOJJJJOO.....",
+    "..OJJJJJJJJO....",
+    "..JJJJJJJJJJB...",
+    "..JJJJJJJJJJBB..",
+    "..JJOOOOJJJ..B..",
+    "...OOPPPOO......",
+    "...OOPPPOO......",
+    "...OOPPPOO......",
+    "...OOOOOO......."
+  ],
+  up_walk1: [
+    "....OOOOOO......",
+    "..OOHHHHHHOO....",
+    ".OHHHHHHHHHHO...",
+    ".OHHHHHHHHHHO...",
+    "OHHHHHHHHHHHHO..",
+    "OHHHHHHHHHHHH...",
+    ".OHHHHHHHHHH....",
+    "...OOJJJJOO.....",
+    "..OJJJJJJJJO....",
+    "..JJJJJJJJJJB...",
+    "..JJJJJJJJJJBB..",
+    "..JJOOOOJJJ..B..",
+    "...OOP..OO......",
+    "...OOP..PP......",
+    "...OOP..PP......",
+    "...OOO..OO......"
+  ],
+  up_walk2: [
+    "....OOOOOO......",
+    "..OOHHHHHHOO....",
+    ".OHHHHHHHHHHO...",
+    ".OHHHHHHHHHHO...",
+    "OHHHHHHHHHHHHO..",
+    "OHHHHHHHHHHHH...",
+    ".OHHHHHHHHHH....",
+    "...OOJJJJOO.....",
+    "..OJJJJJJJJO....",
+    "..JJJJJJJJJJB...",
+    "..JJJJJJJJJJBB..",
+    "..JJOOOOJJJ..B..",
+    "....OO..POO.....",
+    "...PP...POO.....",
+    "...PP...POO.....",
+    "...OO...OOO....."
+  ],
+  side_idle: [
+    "....OOOOOO......",
+    "..OOHHHHHHOO....",
+    ".OHHHHHHHHHHO...",
+    ".OHHHHHSSSSH....",
+    ".OHHHHESSEHO....",
+    ".OHHHSSSSSHO....",
+    "..OHHSSSHHO.....",
+    "...OOWTJOO......",
+    "...OJWWJJO......",
+    "..JJJJJJJO......",
+    ".BBJJJJOOO......",
+    ".BBJJJJO........",
+    "...OOPPPO.......",
+    "...OOPPPO.......",
+    "...OOPPPO.......",
+    "...OOOOOO......."
+  ],
+  side_walk1: [
+    "....OOOOOO......",
+    "..OOHHHHHHOO....",
+    ".OHHHHHHHHHHO...",
+    ".OHHHHHSSSSH....",
+    ".OHHHHESSEHO....",
+    ".OHHHSSSSSHO....",
+    "..OHHSSSHHO.....",
+    "...OOWTJOO......",
+    "...OJWWJJO......",
+    "..JJJJJJJO......",
+    ".BBJJJJOOO......",
+    ".BBJJJJO........",
+    "...OOP..OO......",
+    "...OOP..PP......",
+    "...OOP..PP......",
+    "...OOO..OO......"
+  ],
+  side_walk2: [
+    "....OOOOOO......",
+    "..OOHHHHHHOO....",
+    ".OHHHHHHHHHHO...",
+    ".OHHHHHSSSSH....",
+    ".OHHHHESSEHO....",
+    ".OHHHSSSSSHO....",
+    "..OHHSSSHHO.....",
+    "...OOWTJOO......",
+    "...OJWWJJO......",
+    "..JJJJJJJO......",
+    ".BBJJJJOOO......",
+    ".BBJJJJO........",
+    "....OO..POO.....",
+    "...PP...POO.....",
+    "...PP...POO.....",
+    "...OO...OOO....."
+  ]
+};
+
+const lawyerPalette = {
+  'O': '#0f172a',
+  'H': '#1c1917',
+  'S': '#fcd5a8',
+  'E': '#0f172a',
+  'J': '#1d4ed8',
+  'W': '#ffffff',
+  'T': '#dc2626',
+  'P': '#1e3a8a',
+  'B': '#92400e'
+};
+
+const kaizenSprite = [
+  "....OOOOOO......",
+  "..OOHHHHHHOO....",
+  ".OHHHHHHHHHHO...",
+  ".OHHSSSSHSHHO...",
+  "OHHESSEESSEHHO..",
+  "OHHSSSSSSSSSH...",
+  ".OHHSSSSSSSH....",
+  "...OOWWWWOO.....",
+  "..OKOWTTWOKO....",
+  "..KKOWTTWOKKB...",
+  "..KKOOTTOKKB....",
+  "..KKOOOOKKK.....",
+  "...OOPPPOO......",
+  "...OOPPPOO......",
+  "...OOPPPOO......",
+  "...OOOOOO......."
+];
+const kaizenPalette = {
+  'O': '#0f172a',
+  'H': '#09090b',
+  'S': '#fed7aa',
+  'E': '#7f1d1d',
+  'K': '#881337',
+  'W': '#f8fafc',
+  'T': '#450a0a',
+  'P': '#18181b',
+  'B': '#b45309'
+};
+
+const dentistSprite = [
+  "....OOOOOO......",
+  "..OOGGGGGGOO....",
+  ".OGGGGGGGGGGO...",
+  ".OGGSSSSHSHGO...",
+  "OGGESSEESSEGGO..",
+  "OGGSSSSSSSSSG...",
+  ".OGGSSSSSSSG....",
+  "...OOWWWWOO.....",
+  "..OWOWWWWOWO....",
+  "..WWOWWWWOWW....",
+  "..WWOOZZOOWW....",
+  "..WWOOOOWWW.....",
+  "...OODDDOO......",
+  "...OODDDOO......",
+  "...OODDDOO......",
+  "...OOOOOO......."
+];
+const dentistPalette = {
+  'O': '#0f172a',
+  'G': '#78350f',
+  'S': '#fcd5a8',
+  'E': '#0284c7',
+  'W': '#f1f5f9',
+  'Z': '#0ea5e9',
+  'D': '#334155'
+};
+
+const radiologistSprite = [
+  "....OOOOOO......",
+  "..OOAAAAAAOO....",
+  ".OAAAAAAAAAAO...",
+  ".OAASEESESAAO...",
+  "OAAESSEESSEAAO..",
+  "OAASSSSSSSSSAO..",
+  ".OAASSSSSSSA....",
+  "...OOCCCCCOO....",
+  "..OCCCCCCCCO....",
+  "..CCCCCCCCCC....",
+  "..CCOOZZOOCC....",
+  "..CCOOOOCCCC....",
+  "...OOCCCOOO.....",
+  "...OOCCCOOO.....",
+  "...OOCCCOOO.....",
+  "...OOOOOO......."
+];
+const radiologistPalette = {
+  'O': '#0f172a',
+  'A': '#94a3b8',
+  'S': '#fed7aa',
+  'E': '#0f172a',
+  'C': '#0d9488',
+  'Z': '#facc15'
+};
+
+const detectiveSprite = [
+  "....BBBBBB......",
+  "..BBBBBBBBBBOO..",
+  ".BBBBBBBBBBBBO..",
+  ".OHHSSSSHSHHO...",
+  "OHHESSEESSEHHO..",
+  "OHHSSSSSSSSSH...",
+  ".OHHSSSSSSSH....",
+  "...OOWWWWOO.....",
+  "..OBOWTTWOBO....",
+  "..BBOWTTWOBB....",
+  "..BBOOYTOOBB....",
+  "..BBOOOOBBB.....",
+  "...OOBBBOO......",
+  "...OOBBBOO......",
+  "...OOBBBOO......",
+  "...OOOOOO......."
+];
+const detectivePalette = {
+  'O': '#0f172a',
+  'B': '#78350f',
+  'H': '#1c1917',
+  'S': '#fcd5a8',
+  'E': '#0f172a',
+  'W': '#ffffff',
+  'T': '#0f172a',
+  'Y': '#eab308'
+};
+
+const judgeSprite = [
+  "....LLLLLL......",
+  "..LLLLLLLLLLOO..",
+  ".LLLLLLLLLLLLE..",
+  ".OLLSSSSHSHLLO..",
+  "OLLESSEESSELLL..",
+  "OLLSSSSSSSSSL...",
+  ".OLLSSSSSSSL....",
+  "...OOWWWWOO.....",
+  "..OBOBBBBBOBO...",
+  "..BBOBBBBBOBBG..",
+  "..BBOOYYOOBBGG..",
+  "..BBOOOOBBB..G..",
+  "...OOBBBOO......",
+  "...OOBBBOO......",
+  "...OOBBBOO......",
+  "...OOOOOO......."
+];
+const judgePalette = {
+  'O': '#0f172a',
+  'L': '#e2e8f0',
+  'S': '#fcd5a8',
+  'E': '#0f172a',
+  'B': '#18181b',
+  'W': '#ffffff',
+  'Y': '#facc15',
+  'G': '#b45309'
+};
+
+function renderSprite(ctx, spriteRows, px, py, palette, scale = 2, flipX = false) {
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+  ctx.beginPath();
+  ctx.ellipse(px + 8 * scale, py + 15 * scale, 6 * scale, 3 * scale, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  for (let r = 0; r < 16; r++) {
+    for (let c = 0; c < 16; c++) {
+      const char = spriteRows[r][c];
+      if (char !== '.') {
+        ctx.fillStyle = palette[char] || '#000000';
+        const colPos = flipX ? (15 - c) : c;
+        ctx.fillRect(px + colPos * scale, py + r * scale, scale, scale);
+      }
+    }
+  }
+}
+
+function renderPortraitToCard(containerId, spriteRows, palette, scale = 7) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  const c = document.createElement('canvas');
+  c.width = 16 * scale;
+  c.height = 16 * scale;
+  const ctx = c.getContext('2d');
+  renderSprite(ctx, spriteRows, 0, 0, palette, scale, false);
+  container.appendChild(c);
+}
+
+// ==================== TILE RENDERING ====================
+const TILE_SIZE = 32;
+
+function drawTile(ctx, type, x, y) {
+  switch(type) {
+    case 'grass':
+      ctx.fillStyle = '#1e3a1e';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#2d5a2d';
+      ctx.fillRect(x + 4, y + 6, 2, 6);
+      ctx.fillRect(x + 18, y + 20, 2, 6);
+      ctx.fillRect(x + 24, y + 8, 2, 4);
+      break;
+
+    case 'road':
+      ctx.fillStyle = '#222226';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#333338';
+      ctx.fillRect(x, y, TILE_SIZE, 1);
+      ctx.fillRect(x, y + TILE_SIZE - 1, TILE_SIZE, 1);
+      break;
+
+    case 'road_dash':
+      ctx.fillStyle = '#222226';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#facc15';
+      ctx.fillRect(x + 8, y + 14, 16, 4);
+      break;
+
+    case 'sidewalk':
+      ctx.fillStyle = '#71717a';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.strokeStyle = '#52525b';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
+      break;
+
+    case 'brick_wall':
+      ctx.fillStyle = '#7c2d12';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(x, y + 10, TILE_SIZE, 2);
+      ctx.fillRect(x, y + 22, TILE_SIZE, 2);
+      ctx.fillRect(x + 16, y, 2, 10);
+      ctx.fillRect(x + 8, y + 12, 2, 10);
+      break;
+
+    case 'hospital_wall':
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(x, y + 20, TILE_SIZE, 4);
+      break;
+
+    case 'clinic_wall':
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#0ea5e9';
+      ctx.fillRect(x, y + 14, TILE_SIZE, 3);
+      break;
+
+    case 'wood_wall':
+      ctx.fillStyle = '#3f1a08';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#241005';
+      ctx.fillRect(x + 15, y, 2, TILE_SIZE);
+      break;
+
+    case 'court_wall':
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#b45309';
+      ctx.fillRect(x, y + 24, TILE_SIZE, 4);
+      break;
+
+    case 'wood_floor':
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.strokeStyle = '#451a03';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
+      break;
+
+    case 'tile_floor':
+      ctx.fillStyle = '#f1f5f9';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
+      break;
+
+    case 'court_tile':
+      ctx.fillStyle = '#dbeafe';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.strokeStyle = '#93c5fd';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, TILE_SIZE, TILE_SIZE);
+      break;
+
+    case 'carpet_red':
+      ctx.fillStyle = '#881337';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#facc15';
+      ctx.fillRect(x, y, 2, TILE_SIZE);
+      ctx.fillRect(x + TILE_SIZE - 2, y, 2, TILE_SIZE);
+      break;
+
+    case 'tree':
+      ctx.fillStyle = '#14532d';
+      ctx.beginPath();
+      ctx.arc(x + 16, y + 14, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#166534';
+      ctx.beginPath();
+      ctx.arc(x + 14, y + 12, 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(x + 14, y + 24, 4, 8);
+      break;
+
+    case 'door_mat':
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(x + 2, y + 10, TILE_SIZE - 4, 16);
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(x + 4, y + 12, TILE_SIZE - 8, 2);
+      break;
+
+    case 'water':
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(x + 4, y + 8, 12, 3);
+      ctx.fillRect(x + 16, y + 20, 10, 3);
+      break;
+
+    default:
+      ctx.fillStyle = '#18181b';
+      ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
+  }
+}
+</script>
+
+<script>
+// ==================== MAPS & WORLD DATA ====================
+const worldMaps = {
+  office: {
+    id: 'office',
+    name: 'VANCE LAW OFFICES',
+    w: 25,
+    h: 15,
+    tiles: [],
+    props: [
+      { id: 'father_desk', x: 10, y: 3, w: 5, h: 2, name: "FATHER'S DESK", text: "Judge Lawrence Vance's mahogany desk. A framed photo of him and his son sits next to his official judicial seal.", type: 'desk' },
+      { id: 'case_file_archive', x: 2, y: 1, w: 6, h: 1, name: "CASE ARCHIVES BOOKSHELF", text: "Shelves lined with trial transcripts. Here is the case file: 'State v. Mercer' — Judge Vance formally disbarred ambitious lawyer Kaizen Mercer for forging evidence.", givesClue: 'mercer_dossier', type: 'desk' },
+      { id: 'leather_couch', x: 18, y: 7, w: 4, h: 2, name: "CHESTERFIELD SOFA", text: "A burgundy leather sofa where clients used to wait for consultations.", type: 'desk' }
+    ],
+    warps: [
+      { x: 12, y: 14, targetMap: 'overworld', targetX: 8, targetY: 15, label: "EXIT TO DISTRICT" }
+    ],
+    npcs: [
+      { id: 'assistant', x: 6, y: 5, name: "LEGAL CLERK MAYA", sprite: 'radiologist', text: "Mr. Vance, I'm so sorry about your father. The police rushed to arrest Dr. Aris, but you should check Memorial Hospital's MRI wing and the dental clinic!" }
+    ]
+  },
+
+  overworld: {
+    id: 'overworld',
+    name: 'VERIDIA LEGAL DISTRICT',
+    w: 32,
+    h: 22,
+    tiles: [],
+    props: [
+      { id: 'hosp_sign', x: 4, y: 2, w: 2, h: 1, name: "MEMORIAL HOSPITAL SIGN", text: "METRO MEMORIAL HOSPITAL · 24/7 TRAUMA & RADIOLOGY CENTER. [Door at (4, 4)]", type: 'desk' },
+      { id: 'clinic_sign', x: 25, y: 2, w: 2, h: 1, name: "DENTAL PRACTICE SIGN", text: "DR. ARIS FAMILY DENTAL CLINIC · SPECIALIST IN BIOMATERIAL IMPLANTS. [Door at (25, 4)]", type: 'desk' },
+      { id: 'court_sign', x: 15, y: 2, w: 2, h: 1, name: "SUPREME COURT PLAQUE", text: "SUPREME COURT OF JUSTICE · CHAMBER VIII. THE HIGH BENCH. [Entrance at (15, 4)]", type: 'desk' },
+      { id: 'atm_sign', x: 26, y: 14, w: 2, h: 1, name: "CITY BANK & 24/7 ATM", text: "CITY COMMERCIAL BANK · 24-HOUR EXTERNAL ATM TERMINAL. Directly overlooks the clinic back alley. [Door at (27, 16)]", type: 'desk' },
+      { id: 'hideout_sign', x: 3, y: 15, w: 2, h: 1, name: "CONDEMNED WAREHOUSE", text: "INDUSTRIAL DISTRICT WAREHOUSE #4. Boarded up and marked with police tape. [Door at (3, 17)]", type: 'desk' },
+      { id: 'office_sign', x: 8, y: 13, w: 2, h: 1, name: "LAW OFFICE SIGN", text: "VANCE & ASSOCIATES · ATTORNEYS AT LAW. [Door at (8, 14)]", type: 'desk' },
+      { id: 'fountain', x: 15, y: 11, w: 2, h: 2, name: "LADY JUSTICE FOUNTAIN", text: "A marble fountain adorned with the Scales of Justice, gleaming under the morning sky.", type: 'fountain' }
+    ],
+    warps: [
+      { x: 8, y: 14, targetMap: 'office', targetX: 12, targetY: 13, label: "ENTER VANCE LAW OFFICE" },
+      { x: 4, y: 4, targetMap: 'hospital', targetX: 12, targetY: 13, label: "ENTER MEMORIAL HOSPITAL" },
+      { x: 25, y: 4, targetMap: 'clinic', targetX: 12, targetY: 13, label: "ENTER DENTAL CLINIC" },
+      { x: 15, y: 4, targetMap: 'courtroom', targetX: 12, targetY: 13, label: "ENTER SUPREME COURTROOM" },
+      { x: 27, y: 16, targetMap: 'atm_kiosk', targetX: 12, targetY: 13, label: "EXAMINE ATM & ALLEY CAMERA" },
+      { x: 3, y: 17, targetMap: 'safehouse', targetX: 12, targetY: 13, label: "ENTER ABANDONED SAFEHOUSE", reqClue: 'atm_footage' }
+    ],
+    npcs: [
+      { id: 'det_miller_overworld', x: 12, y: 8, name: "DETECTIVE MILLER", sprite: 'detective', text: "Young Vance! Your father was a good man. Everyone thinks the dentist botched the implant, but I suspect foul play. Look into that ATM camera across from the clinic alley!" },
+      { id: 'cop_guard', x: 3, y: 18, name: "POLICE OFFICER", sprite: 'detective', text: "This abandoned warehouse on the docks had reports of an unknown car matching plate #7X-904. It's locked unless you have official surveillance authorization." },
+      { id: 'citizen', x: 21, y: 12, name: "CITIZEN", sprite: 'dentist', text: "The entire city is shocked by Judge Vance's passing. The trial against Dr. Aris is starting very soon at the Supreme Court!" }
+    ]
+  },
+
+  hospital: {
+    id: 'hospital',
+    name: 'MEMORIAL HOSPITAL · RADIOLOGY WING',
+    w: 25,
+    h: 15,
+    tiles: [],
+    props: [
+      { id: 'mri_scanner', x: 4, y: 3, w: 4, h: 4, name: "3.0 TESLA SUPERCONDUCTING MRI SCANNER", text: "The massive magnetic resonance imaging machine. Emergency logs indicate an anomalous ferromagnetic projectile ripped through the gantry at 45 m/s when the 3T magnet energized.", givesClue: 'mri_report', type: 'mri' },
+      { id: 'autopsy_stretcher', x: 11, y: 4, w: 3, h: 2, name: "CORONER STRETCHER & BIO-REPORT", text: "Coroner notes: 'The implant extracted from the patient's skull was 100% pure carbon-ferromagnetic iron, highly reactive to magnets. Legitimate medical implants NEVER contain pure iron.'", givesClue: 'mri_report', type: 'desk' },
+      { id: 'hosp_reception', x: 16, y: 8, w: 6, h: 2, name: "RADIOLOGY RECORDS DESK", text: "The patient schedule log. Judge Vance was booked for his annual cranial MRI scan at 10:00 AM sharp.", type: 'desk' }
+    ],
+    warps: [
+      { x: 12, y: 14, targetMap: 'overworld', targetX: 4, targetY: 5, label: "EXIT TO CITY SQUARE" }
+    ],
+    npcs: [
+      { id: 'dr_evans', x: 10, y: 7, name: "DR. EVANS (CHIEF RADIOLOGIST)", sprite: 'radiologist', text: "Justin, I am heartbroken. Dental implants are ALWAYS palladium or titanium—paramagnetic metals! The tooth in your father's mouth was pure magnetic iron. It became a high-speed bullet when the magnet turned on!", givesClue: 'mri_report' }
+    ]
+  },
+
+  clinic: {
+    id: 'clinic',
+    name: 'DR. ARIS FAMILY DENTAL PRACTICE',
+    w: 25,
+    h: 15,
+    tiles: [],
+    props: [
+      { id: 'dental_chair', x: 6, y: 4, w: 3, h: 3, name: "HYDRAULIC DENTAL CHAIR", text: "The specialized dental chair where Judge Vance had his tooth installed last week. Everything is sanitary and state-of-the-art.", type: 'chair' },
+      { id: 'dental_safe', x: 18, y: 3, w: 3, h: 2, name: "IMPLANT STORAGE VAULT", text: "The vault where medical crowns are kept before surgery. The lock shows microscopic scratches around the tumbler—signs of a professional lockpick!", type: 'safe' },
+      { id: 'clinic_cctv_console', x: 18, y: 7, w: 4, h: 2, name: "SECURITY DVR MONITOR", text: "Security DVR playback: The video appears normal at first, but checking the digital timestamp reveals a 4-minute loop between 03:10 AM and 03:30 AM! Someone patched the footage!", givesClue: 'clinic_cctv', type: 'desk' }
+    ],
+    warps: [
+      { x: 12, y: 14, targetMap: 'overworld', targetX: 25, targetY: 5, label: "EXIT TO CITY SQUARE" }
+    ],
+    npcs: [
+      { id: 'dr_aris', x: 12, y: 6, name: "DR. ARIS (FAMILY DENTIST)", sprite: 'dentist', text: "Justin! I swear on my life, I loved your father! I ordered a custom Swiss Palladium-100 crown—it's 100% MRI safe! Here is my official supplier invoice from Zurich! Someone must have switched it!", givesClue: 'dentist_invoice' }
+    ]
+  },
+
+  atm_kiosk: {
+    id: 'atm_kiosk',
+    name: 'COMMERCIAL BANK · 24/7 ATM TERMINAL',
+    w: 25,
+    h: 15,
+    tiles: [],
+    props: [
+      { id: 'atm_machine', x: 11, y: 4, w: 3, h: 3, name: "COMMERCIAL BANK ATM CONSOLE", text: "High-definition ATM surveillance camera. It has a wide fisheye lens pointed across the street directly into the dental clinic's rear alleyway.", givesClue: 'atm_footage', type: 'atm' },
+      { id: 'security_station', x: 17, y: 5, w: 4, h: 2, name: "GUARD LOGBOOK", text: "Security report: 'Suspicious vehicle idling near the dental clinic back alley on Tuesday at 03:15 AM.'", givesClue: 'atm_footage', type: 'desk' }
+    ],
+    warps: [
+      { x: 12, y: 14, targetMap: 'overworld', targetX: 27, targetY: 17, label: "RETURN TO STREET" }
+    ],
+    npcs: [
+      { id: 'bank_guard', x: 8, y: 6, name: "BANK SECURITY OFFICER", sprite: 'detective', text: "Looking for footage? Our exterior camera caught an unmarked black sedan idling in Dr. Aris's alley at 03:15 AM! Plate number: #7X-904. The vehicle is tied to an abandoned dock warehouse!", givesClue: 'atm_footage' }
+    ]
+  },
+
+  safehouse: {
+    id: 'safehouse',
+    name: 'ABANDONED SAFEHOUSE · INDUSTRIAL QUARTER',
+    w: 25,
+    h: 15,
+    tiles: [],
+    props: [
+      { id: 'chalk_outline', x: 6, y: 6, w: 4, h: 3, name: "CHALK OUTLINE & POISON VIAL", text: "Chalk outline on the floor. An anonymous orphan thief was found dead here from fast-acting cyanide. A vial of rare prescription cyanide sits on the desk.", type: 'chalk' },
+      { id: 'heavy_lockbox', x: 16, y: 4, w: 3, h: 2, name: "HEAVY STEEL WALL SAFE", text: "You enter the combination from plate #7X-904... CLICK! Inside rests the REAL PALLADIUM TOOTH with Dr. Aris's clinic serial stamp #P-992!", givesClue: 'stolen_tooth', type: 'safe' },
+      { id: 'wire_transfer_desk', x: 16, y: 8, w: 5, h: 2, name: "BURGLAR'S WORKTABLE", text: "Beneath the tools lies an offshore bank transfer slip: '$250,000.00 wired from KAIZEN MERCER - LEGAL ESCROW.' Memo: 'Swap the tooth crown and vanish.'", givesClue: 'wire_receipt', type: 'desk' }
+    ],
+    warps: [
+      { x: 12, y: 14, targetMap: 'overworld', targetX: 3, targetY: 18, label: "EXIT SAFEHOUSE" }
+    ],
+    npcs: []
+  },
+
+  courtroom: {
+    id: 'courtroom',
+    name: 'SUPREME COURTROOM · CHAMBER VIII',
+    w: 25,
+    h: 15,
+    tiles: [],
+    props: [
+      { id: 'court_bench', x: 9, y: 2, w: 7, h: 2, name: "CHIEF JUSTICE'S BENCH", text: "The high judge's bench. Presiding Chief Justice Sterling is prepared to open the trial of State v. Dr. Aris.", isCourtTrigger: true, type: 'desk' },
+      { id: 'defense_stand', x: 5, y: 7, w: 4, h: 2, name: "DEFENSE COUNSEL DESK", text: "Your assigned defense podium. Take your position to begin the trial!", isCourtTrigger: true, type: 'desk' },
+      { id: 'prosecution_stand', x: 16, y: 7, w: 4, h: 2, name: "PROSECUTION DESK", text: "Prosecutor Kaizen Mercer stands here, smirking in his tailored crimson suit.", type: 'desk' }
+    ],
+    warps: [
+      { x: 12, y: 14, targetMap: 'overworld', targetX: 15, targetY: 5, label: "LEAVE COURTROOM" }
+    ],
+    npcs: [
+      { id: 'kaizen_npc', x: 17, y: 6, name: "KAIZEN MERCER", sprite: 'kaizen', text: "Well, well... the Judge's son is attempting to play defense attorney? Give up, Vance. The dentist will take the fall, and your father is gone forever!" },
+      { id: 'judge_npc', x: 12, y: 2, name: "CHIEF JUSTICE STERLING", sprite: 'chief_judge', text: "Counsel, are both sides prepared to open arguments in State v. Dr. Aris? Step to your desk when ready!" }
+    ]
+  }
+};
+
+function buildMapGrids() {
+  const off = worldMaps.office;
+  off.tiles = [];
+  for (let y = 0; y < off.h; y++) {
+    const row = [];
+    for (let x = 0; x < off.w; x++) {
+      if (y === 0 || x === 0 || x === off.w - 1 || y === off.h - 1) {
+        if (y === off.h - 1 && x === 12) row.push('door_mat');
+        else row.push('wood_wall');
+      } else if (y === 1) {
+        row.push('wood_wall');
+      } else {
+        row.push('wood_floor');
+      }
+    }
+    off.tiles.push(row);
+  }
+
+  const ow = worldMaps.overworld;
+  ow.tiles = [];
+  for (let y = 0; y < ow.h; y++) {
+    const row = [];
+    for (let x = 0; x < ow.w; x++) {
+      if (y === 0 || x === 0 || x === ow.w - 1 || y === ow.h - 1) {
+        row.push('tree');
+      } else if (y === 9 || y === 10) {
+        row.push(y === 9 ? 'road' : 'road_dash');
+      } else if (x === 15 || x === 16) {
+        row.push(x === 15 ? 'road' : 'road_dash');
+      } else if (x >= 2 && x <= 6 && y >= 1 && y <= 4) {
+        if (x === 4 && y === 4) row.push('door_mat');
+        else row.push('hospital_wall');
+      } else if (x >= 13 && x <= 17 && y >= 1 && y <= 4) {
+        if (x === 15 && y === 4) row.push('door_mat');
+        else row.push('court_wall');
+      } else if (x >= 23 && x <= 27 && y >= 1 && y <= 4) {
+        if (x === 25 && y === 4) row.push('door_mat');
+        else row.push('clinic_wall');
+      } else if (x >= 25 && x <= 29 && y >= 14 && y <= 17) {
+        if (x === 27 && y === 16) row.push('door_mat');
+        else row.push('brick_wall');
+      } else if (x >= 2 && x <= 5 && y >= 15 && y <= 18) {
+        if (x === 3 && y === 17) row.push('door_mat');
+        else row.push('brick_wall');
+      } else if (x >= 7 && x <= 10 && y >= 12 && y <= 14) {
+        if (x === 8 && y === 14) row.push('door_mat');
+        else row.push('wood_wall');
+      } else if (y === 8 || y === 11 || x === 14 || x === 17) {
+        row.push('sidewalk');
+      } else if (x === 15 && y === 12) {
+        row.push('water');
+      } else {
+        row.push('grass');
+      }
+    }
+    ow.tiles.push(row);
+  }
+
+  const hosp = worldMaps.hospital;
+  hosp.tiles = [];
+  for (let y = 0; y < hosp.h; y++) {
+    const row = [];
+    for (let x = 0; x < hosp.w; x++) {
+      if (y === 0 || x === 0 || x === hosp.w - 1 || y === hosp.h - 1) {
+        if (y === hosp.h - 1 && x === 12) row.push('door_mat');
+        else row.push('hospital_wall');
+      } else if (x === 8 && y < 10) {
+        row.push('hospital_wall');
+      } else {
+        row.push('tile_floor');
+      }
+    }
+    hosp.tiles.push(row);
+  }
+
+  const cl = worldMaps.clinic;
+  cl.tiles = [];
+  for (let y = 0; y < cl.h; y++) {
+    const row = [];
+    for (let x = 0; x < cl.w; x++) {
+      if (y === 0 || x === 0 || x === cl.w - 1 || y === cl.h - 1) {
+        if (y === cl.h - 1 && x === 12) row.push('door_mat');
+        else row.push('clinic_wall');
+      } else {
+        row.push('tile_floor');
+      }
+    }
+    cl.tiles.push(row);
+  }
+
+  const atm = worldMaps.atm_kiosk;
+  atm.tiles = [];
+  for (let y = 0; y < atm.h; y++) {
+    const row = [];
+    for (let x = 0; x < atm.w; x++) {
+      if (y === 0 || x === 0 || x === atm.w - 1 || y === atm.h - 1) {
+        if (y === atm.h - 1 && x === 12) row.push('door_mat');
+        else row.push('brick_wall');
+      } else {
+        row.push('tile_floor');
+      }
+    }
+    atm.tiles.push(row);
+  }
+
+  const sh = worldMaps.safehouse;
+  sh.tiles = [];
+  for (let y = 0; y < sh.h; y++) {
+    const row = [];
+    for (let x = 0; x < sh.w; x++) {
+      if (y === 0 || x === 0 || x === sh.w - 1 || y === sh.h - 1) {
+        if (y === sh.h - 1 && x === 12) row.push('door_mat');
+        else row.push('brick_wall');
+      } else {
+        row.push('wood_floor');
+      }
+    }
+    sh.tiles.push(row);
+  }
+
+  const cr = worldMaps.courtroom;
+  cr.tiles = [];
+  for (let y = 0; y < cr.h; y++) {
+    const row = [];
+    for (let x = 0; x < cr.w; x++) {
+      if (y === 0 || x === 0 || x === cr.w - 1 || y === cr.h - 1) {
+        if (y === cr.h - 1 && x === 12) row.push('door_mat');
+        else row.push('court_wall');
+      } else if (x >= 11 && x <= 13) {
+        row.push('carpet_red');
+      } else {
+        row.push('court_tile');
+      }
+    }
+    cr.tiles.push(row);
+  }
+}
+
+// ==================== EVIDENCE & INVENTORY ====================
+const allClues = {
+  mercer_dossier: {
+    id: 'mercer_dossier',
+    icon: '📁',
+    name: 'State v. Mercer Case File (Kaizen Motive)',
+    source: "Father's Study Archives",
+    desc: "Court transcript where Judge Lawrence Vance disbarred ambitious lawyer Kaizen Mercer for manufacturing fake witness testimony. Kaizen swore vengeance on the court record.",
+    significance: "Establishes Kaizen's burning personal vendetta against Judge Vance.",
+    unlocked: false
+  },
+  mri_report: {
+    id: 'mri_report',
+    icon: '🧲',
+    name: 'MRI Ballistics & Iron Analysis',
+    source: "Memorial Hospital (Radiology Wing)",
+    desc: "Coroner autopsy: The implanted tooth extracted from the Judge's skull was 100% pure ferromagnetic iron. When the 3.0 Tesla magnet activated, the iron tooth acted as a supersonic magnetic projectile.",
+    significance: "Proves the murder weapon was a lethal iron decoy, not a standard biocompatible crown.",
+    unlocked: false
+  },
+  dentist_invoice: {
+    id: 'dentist_invoice',
+    icon: '🧾',
+    name: "Dr. Aris's Palladium Purchase Invoice",
+    source: "Dr. Aris Dental Practice",
+    desc: "Official receipt from Zurich Biomaterials: Dr. Aris purchased a custom non-magnetic Palladium-100 crown (#P-992) for Judge Vance. The clinic never stocks or orders ferromagnetic iron.",
+    significance: "Proves Dr. Aris never ordered iron; the implant was switched before installation.",
+    unlocked: false
+  },
+  clinic_cctv: {
+    id: 'clinic_cctv',
+    icon: '📼',
+    name: 'Tampered Clinic CCTV Log (4-Min Loop)',
+    source: "Dental Clinic Security Console",
+    desc: "Forensic analysis of the clinic DVR: The digital video feed between 03:10 AM and 03:30 AM was hacked into a 4-minute repeating loop to hide a physical break-in.",
+    significance: "Proves an intruder infiltrated the clinic and tampered with internal surveillance.",
+    unlocked: false
+  },
+  atm_footage: {
+    id: 'atm_footage',
+    icon: '📹',
+    name: 'ATM Surveillance Snapshot (Plate #7X-904)',
+    source: "Commercial Bank ATM Terminal",
+    desc: "External bank camera recorded an unmarked black sedan parked in the dental clinic alley at 03:15 AM. A hooded figure broke into the back door. License plate captured: #7X-904, traced to an abandoned warehouse.",
+    significance: "Direct physical proof of the burglary and unlocks the abandoned safehouse location!",
+    unlocked: false
+  },
+  stolen_tooth: {
+    id: 'stolen_tooth',
+    icon: '🦷',
+    name: 'The Genuine Palladium Tooth Crown',
+    source: "Abandoned Safehouse Strongbox",
+    desc: "The authentic Swiss palladium dental crown crafted for Judge Vance, stamped with Dr. Aris's serial #P-992. Found hidden inside the deceased burglar's safe.",
+    significance: "Irrefutable proof that Dr. Aris's real palladium tooth was stolen and swapped for the iron weapon!",
+    unlocked: false
+  },
+  wire_receipt: {
+    id: 'wire_receipt',
+    icon: '💵',
+    name: '$250,000 Offshore Wire Transfer Receipt',
+    source: "Safehouse Burglar Desk",
+    desc: "Bank transfer confirmation proving $250,000 was wired to the burglar from 'KAIZEN MERCER - LEGAL ESCROW'. Memo: 'Swap the tooth crown and vanish.' Beside it was a vial of prescription cyanide.",
+    significance: "The smoking gun connecting Kaizen directly to hiring and silencing the burglar!",
+    unlocked: false
+  }
+};
+
+let selectedClueId = null;
+
+function acquireClue(clueId) {
+  const clue = allClues[clueId];
+  if (!clue || clue.unlocked) return;
+  clue.unlocked = true;
+
+  AudioEngine.playItemClue();
+  updateClueCounter();
+  updateQuestStatus();
+
+  if (clueId === 'atm_footage') {
+    showDialogue(
+      "POLICE DISPATCH REPORT",
+      "License plate #7X-904 traced! Location confirmed: Abandoned Warehouse #4 in the Industrial District! The safehouse is now accessible via the town map or southwest alleyway!"
+    );
+  } else {
+    showDialogue(
+      "NEW EVIDENCE ACQUIRED!",
+      `Obtained: [${clue.name}]! Added to your Case Briefcase. Check the Evidence Bag [B] for full forensics.`
+    );
+  }
+}
+
+function getUnlockedClueCount() {
+  return Object.values(allClues).filter(c => c.unlocked).length;
+}
+
+function updateClueCounter() {
+  const count = getUnlockedClueCount();
+  const pill = document.getElementById('bagCountPill');
+  if (pill) pill.textContent = `${count}/7`;
+}
+
+function updateQuestStatus() {
+  const questEl = document.getElementById('hudQuestBanner');
+  if (!questEl) return;
+
+  if (!allClues.mri_report.unlocked) {
+    questEl.innerHTML = "MISSION: <b>Inspect Hospital MRI Room & Coroner Stretcher</b>";
+  } else if (!allClues.dentist_invoice.unlocked || !allClues.clinic_cctv.unlocked) {
+    questEl.innerHTML = "MISSION: <b>Question Dr. Aris & Inspect Dental Clinic CCTV</b>";
+  } else if (!allClues.atm_footage.unlocked) {
+    questEl.innerHTML = "MISSION: <b>Examine the ATM Camera overlooking the clinic alley</b>";
+  } else if (!allClues.stolen_tooth.unlocked || !allClues.wire_receipt.unlocked) {
+    questEl.innerHTML = "MISSION: <b>Infiltrate the Abandoned Safehouse (Car #7X-904 Lead)</b>";
+  } else {
+    questEl.innerHTML = "MISSION: <b style='color:#facc15;'>ALL EVIDENCE FOUND! Confront Kaizen in Courtroom VIII!</b>";
+  }
+}
+
+function renderEvidenceBag() {
+  const container = document.getElementById('clueListContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const clueEntries = Object.values(allClues);
+  clueEntries.forEach(clue => {
+    const card = document.createElement('div');
+    card.className = `clue-item-card ${clue.unlocked ? '' : 'locked'} ${selectedClueId === clue.id ? 'selected' : ''}`;
+    card.innerHTML = `
+      <div class="clue-icon-box">${clue.unlocked ? clue.icon : '🔒'}</div>
+      <div class="clue-meta-col">
+        <div class="clue-title-text">${clue.unlocked ? clue.name : '??? (Unidentified Clue)'}</div>
+        <div class="clue-source-tag">${clue.unlocked ? clue.source : 'Not yet discovered'}</div>
+      </div>
+    `;
+
+    if (clue.unlocked) {
+      card.addEventListener('click', () => {
+        selectClueForInspection(clue.id);
+      });
+    }
+    container.appendChild(card);
+  });
+
+  if (!selectedClueId) {
+    const firstUnlocked = clueEntries.find(c => c.unlocked);
+    if (firstUnlocked) selectClueForInspection(firstUnlocked.id);
+  } else {
+    selectClueForInspection(selectedClueId);
+  }
+}
+
+function selectClueForInspection(clueId) {
+  selectedClueId = clueId;
+  const clue = allClues[clueId];
+  if (!clue || !clue.unlocked) return;
+
+  document.querySelectorAll('.clue-item-card').forEach(el => el.classList.remove('selected'));
+  document.getElementById('inspectClueTitle').textContent = clue.name;
+  document.getElementById('inspectClueSource').textContent = `Discovery Location: ${clue.source}`;
+  document.getElementById('inspectClueBody').textContent = clue.desc;
+  document.getElementById('inspectClueSignificance').innerHTML = `<b>LEGAL SIGNIFICANCE:</b> ${clue.significance}`;
+
+  const presentBtn = document.getElementById('btnPresentCurrentClue');
+  if (gameState === 'court_battle') {
+    presentBtn.classList.add('visible');
+    presentBtn.onclick = () => {
+      closeEvidenceBag();
+      handleEvidencePresentation(clueId);
+    };
+  } else {
+    presentBtn.classList.remove('visible');
+  }
+}
+
+function openEvidenceBag() {
+  renderEvidenceBag();
+  document.getElementById('modalEvidenceBag').classList.add('open');
+  AudioEngine.playBlip();
+}
+
+function closeEvidenceBag() {
+  document.getElementById('modalEvidenceBag').classList.remove('open');
+}
+
+function renderTownMap() {
+  const grid = document.getElementById('townMapGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const locations = [
+    { mapId: 'office', name: 'Vance Law Offices', desc: 'Home base and Father\'s archive library.', unlocked: true },
+    { mapId: 'hospital', name: 'Memorial Hospital', desc: 'High-field MRI Radiology Center & Coroner records.', unlocked: true },
+    { mapId: 'clinic', name: 'Dr. Aris Dental Practice', desc: 'Consultation room and CCTV DVR console.', unlocked: true },
+    { mapId: 'atm_kiosk', name: 'Commercial Bank & ATM', desc: 'External camera overlooking the dental clinic alley.', unlocked: true },
+    { mapId: 'safehouse', name: 'Abandoned Safehouse', desc: 'Industrial hideout tied to car plate #7X-904.', unlocked: allClues.atm_footage.unlocked },
+    { mapId: 'courtroom', name: 'Supreme Courtroom VIII', desc: 'Chamber VIII where the trial of State v. Dr. Aris is held.', unlocked: true }
+  ];
+
+  locations.forEach(loc => {
+    const card = document.createElement('div');
+    card.className = `map-loc-card ${loc.unlocked ? '' : 'locked'}`;
+    card.innerHTML = `
+      <div class="map-loc-title">📍 ${loc.name}</div>
+      <div class="map-loc-desc">${loc.desc}</div>
+      <div class="map-loc-status">${loc.unlocked ? '✓ ACCESSIBLE · CLICK TO TRAVEL' : '🔒 LOCKED (Requires ATM Lead)'}</div>
+    `;
+
+    if (loc.unlocked) {
+      card.addEventListener('click', () => {
+        warpToMap(loc.mapId, 12, 13);
+        closeTownMap();
+      });
+    }
+    grid.appendChild(card);
+  });
+}
+
+function openTownMap() {
+  renderTownMap();
+  document.getElementById('modalTownMap').classList.add('open');
+  AudioEngine.playBlip();
+}
+
+function closeTownMap() {
+  document.getElementById('modalTownMap').classList.remove('open');
+}
+
+// ==================== COURTROOM BATTLE ENGINE ====================
+const battlePhases = [
+  {
+    phase: 1,
+    tag: "PHASE 1 OF 4 · THE MURDER WEAPON",
+    testimony: 'Kaizen: "The facts are indisputable! Dr. Aris committed second-degree murder by installing an iron tooth, fully aware the Judge had an annual MRI scheduled. It was deliberate medical homicide!"',
+    contradictionClues: ['dentist_invoice', 'mri_report'],
+    pressDialogue: 'Justin: "Dr. Aris has treated my father for 25 years with flawless care. Why would he suddenly use iron?"\nKaizen: "Greed or madness, counsel! He ordered the materials, he holds the scalpel!"',
+    correctDialogue: 'OBJECTION!\nJustin: "Dr. Aris never stocked, ordered, or touched pure iron! His verified supplier invoice from Zurich Biomaterials proves he ordered medical-grade Palladium-100! The iron tooth was a foreign replacement planted by an intruder!"',
+    kaizenBreakdownReaction: 'Kaizen: "T-Tch! So what if he ordered palladium? That doesn\'t prove someone else broke in!"'
+  },
+  {
+    phase: 2,
+    tag: "PHASE 2 OF 4 · THE SECURITY FOOTAGE",
+    testimony: 'Kaizen: "An intruder? Preposterous! The dental clinic\'s state-of-the-art security cameras operated all night. Nobody entered through any door! Only Dr. Aris had physical access to the dental vault!"',
+    contradictionClues: ['clinic_cctv', 'atm_footage'],
+    pressDialogue: 'Justin: "Have digital forensics reviewed the raw clinic video stream?"\nKaizen: "The tape speaks for itself! No one entered the clinic premises that night!"',
+    correctDialogue: 'OBJECTION!\nJustin: "The clinic\'s DVR was hacked into a 4-minute continuous loop between 3:10 and 3:30 AM! And across the alleyway, the commercial bank\'s ATM camera captured an unmarked black sedan idling at 3:15 AM as a hooded thief entered the rear door! License plate: #7X-904!"',
+    kaizenBreakdownReaction: 'Kaizen: "N-No! The ATM camera was supposed to be offline for maintenance... I mean, that plate proves nothing!"'
+  },
+  {
+    phase: 3,
+    tag: "PHASE 3 OF 4 · THE PHYSICAL IMPLANT",
+    testimony: 'Kaizen: "Even if a phantom burglar broke into the clinic, where is the supposed palladium tooth? Dr. Aris fabricated that entire story after he botched the surgery!"',
+    contradictionClues: ['stolen_tooth'],
+    pressDialogue: 'Justin: "If my father had palladium in his jaw, it wouldn\'t have reacted to the 3.0 Tesla magnet!"\nKaizen: "Because the dentist never put palladium in! He kept the money and used cheap iron!"',
+    correctDialogue: 'TAKE THAT!\nJustin: "Here is the real palladium crown! Recovered from the burglar\'s safehouse, bearing Dr. Aris\'s microscopic serial stamp #P-992! The burglar stole this tooth before surgery and placed the iron replica in the clinic safe!"',
+    kaizenBreakdownReaction: 'Kaizen: "G-GAAAH! You found the strongbox?! But that warehouse was supposed to be scrubbed clean!"'
+  },
+  {
+    phase: 4,
+    tag: "PHASE 4 OF 4 · THE TRUE MASTERMIND & MOTIVE",
+    testimony: 'Kaizen: "A burglar stole it? Then go prosecute the burglar! He was found dead of cyanide poisoning anyway! You have zero evidence linking ANYONE in this courtroom to that theft!"',
+    contradictionClues: ['wire_receipt', 'mercer_dossier'],
+    pressDialogue: 'Justin: "Who funded the burglar? An orphan thief doesn\'t execute complex biomedical assassinations without a client!"\nKaizen: "That\'s pure speculation! You can\'t connect me to this!"',
+    correctDialogue: 'HOLD IT!\nJustin: "We recovered this bank transfer slip from the burglar\'s desk! A $250,000 wire sent directly from YOUR legal escrow account: KAIZEN MERCER! With the memo: \'Swap the tooth and vanish!\' And you poisoned him with cyanide when he finished the job! Your motive? My father ruined your career and disbarred you for forgery in State v. Mercer!"',
+    kaizenBreakdownReaction: 'Kaizen: "CURSE YOU, VANCE! HE DESTROYED MY ENTIRE FUTURE! HE DESERVED TO DIE IN THAT SCANNER! I CRAFTED THE PERFECT MURDER... HOW COULD YOU PIECE IT TOGETHER?!"'
+  }
+];
+
+let battleState = {
+  currentPhaseIndex: 0,
+  credibility: 100,
+  maxCredibility: 100
+};
+
+function startCourtroomBattle() {
+  gameState = 'court_battle';
+  battleState.currentPhaseIndex = 0;
+  battleState.credibility = 100;
+
+  AudioEngine.startBgm('court');
+  AudioEngine.playGavel();
+
+  const overlay = document.getElementById('court-battle-overlay');
+  overlay.classList.add('active');
+
+  renderPortraitToCard('defensePortraitCard', lawyerSprites.side_idle, lawyerPalette, 8);
+  renderPortraitToCard('prosecutorPortraitCard', kaizenSprite, kaizenPalette, 8);
+  renderPortraitToCard('battleJudgePortrait', judgeSprite, judgePalette, 4.5);
+
+  updateBattleUI();
+}
+
+function updateBattleUI() {
+  const phaseData = battlePhases[battleState.currentPhaseIndex];
+  document.getElementById('testimonyPhaseTag').textContent = phaseData.tag;
+  document.getElementById('testimonyTextDisplay').textContent = phaseData.testimony;
+
+  const bar = document.getElementById('battleCredibilityBar');
+  const val = document.getElementById('battleCredibilityVal');
+  const pct = Math.max(0, battleState.credibility);
+  bar.style.width = `${pct}%`;
+  val.textContent = `${pct}%`;
+
+  if (pct > 50) {
+    bar.style.background = 'linear-gradient(90deg, #ef4444, #f59e0b 40%, #22c55e 100%)';
+  } else if (pct > 25) {
+    bar.style.background = 'linear-gradient(90deg, #ef4444, #f59e0b 100%)';
+  } else {
+    bar.style.background = '#ef4444';
+  }
+}
+
+function triggerObjectionAnimation(callback) {
+  AudioEngine.playObjectionHit();
+  const splash = document.getElementById('objection-splash');
+  splash.classList.add('burst');
+  setTimeout(() => {
+    splash.classList.remove('burst');
+    if (callback) callback();
+  }, 650);
+}
+
+function handleBattlePress() {
+  AudioEngine.playBlip();
+  const phaseData = battlePhases[battleState.currentPhaseIndex];
+  document.getElementById('testimonyTextDisplay').textContent = phaseData.pressDialogue;
+}
+
+function handleEvidencePresentation(clueId) {
+  const phaseData = battlePhases[battleState.currentPhaseIndex];
+  const isCorrect = phaseData.contradictionClues.includes(clueId);
+
+  if (isCorrect) {
+    triggerObjectionAnimation(() => {
+      document.getElementById('testimonyTextDisplay').textContent = phaseData.correctDialogue;
+      document.getElementById('kaizenMoodSub').textContent = "PROSECUTING ATTORNEY · CORNERED!";
+      AudioEngine.playGavel();
+
+      setTimeout(() => {
+        document.getElementById('testimonyTextDisplay').textContent = phaseData.kaizenBreakdownReaction;
+
+        setTimeout(() => {
+          battleState.currentPhaseIndex++;
+          if (battleState.currentPhaseIndex >= battlePhases.length) {
+            triggerVictoryEnding();
+          } else {
+            updateBattleUI();
+          }
+        }, 2200);
+      }, 2000);
+    });
+
+  } else {
+    AudioEngine.playPenaltyError();
+    AudioEngine.playGavel();
+    battleState.credibility -= 25;
+    updateBattleUI();
+
+    document.getElementById('testimonyTextDisplay').textContent =
+      `Chief Justice Sterling: "Counsel Vance! That evidence has no bearing on the prosecutor's claim! Do not waste this court's time!" (-25% Credibility)`;
+
+    if (battleState.credibility <= 0) {
+      setTimeout(() => {
+        triggerDefeatEnding();
+      }, 1400);
+    }
+  }
+}
+
+function triggerVictoryEnding() {
+  AudioEngine.stopBgm();
+  AudioEngine.playVictoryFanfare();
+  AudioEngine.playGavel();
+
+  const modal = document.getElementById('verdict-modal');
+  const stamp = document.getElementById('verdictStamp');
+  const story = document.getElementById('verdictStoryText');
+
+  stamp.className = 'verdict-stamp guilty-win';
+  stamp.textContent = "VERDICT: LIFE SENTENCE FOR KAIZEN!";
+
+  story.innerHTML = `
+    <b>JUSTICE HAS PREVAILED!</b><br><br>
+    Faced with the recovered palladium tooth, the ATM surveillance tape, the looped CCTV records, and the $250,000 wire transfer slip, Kaizen Mercer suffered a full breakdown in open court and confessed to orchestrating the assassination of Judge Lawrence Vance.<br><br>
+    Chief Justice Sterling struck his gavel three times, officially dismissing all charges against Dr. Aris and ordering Kaizen Mercer remanded to federal penitentiary for <b>LIFE IMPRISONMENT WITHOUT PAROLE</b> for first-degree murder, evidence tampering, and conspiracy.<br><br>
+    Your father's honor is vindicated, the true killer is behind bars, and your name as a master defense attorney is etched in judicial history.
+  `;
+
+  modal.classList.add('show');
+}
+
+function triggerDefeatEnding() {
+  AudioEngine.stopBgm();
+  AudioEngine.playGavel();
+
+  const modal = document.getElementById('verdict-modal');
+  const stamp = document.getElementById('verdictStamp');
+  const story = document.getElementById('verdictStoryText');
+
+  stamp.className = 'verdict-stamp defeat-jail';
+  stamp.textContent = "VERDICT: DEFENSE COUNSEL SENTENCED TO JAIL!";
+
+  story.innerHTML = `
+    <b>THE TRUTH WAS LOST...</b><br><br>
+    Without sufficient evidence or valid arguments, your accusations collapsed under judicial scrutiny. Chief Justice Sterling struck his gavel in fury, finding you guilty of <b>GROSS CONTEMPT OF COURT AND FABRICATION OF SLANDER</b>.<br><br>
+    Dr. Aris was convicted of medical homicide, while Kaizen Mercer smirked as bailiffs placed you in handcuffs, sentencing you to <b>5 YEARS IN STATE PRISON</b>.<br><br>
+    <i>Tip: Explore all locations, inspect the ATM camera to trace car #7X-904, and break into the abandoned safehouse before entering court!</i>
+  `;
+
+  modal.classList.add('show');
+}
+</script>
+
+<script>
+// ==================== ENGINE & MAIN CONTROLLER ====================
+let gameState = 'title'; // 'title' | 'playing' | 'court_battle'
+let currentMap = worldMaps.office;
+
+const canvas = document.getElementById('mainCanvas');
+const ctx = canvas.getContext('2d');
+
+const titleCanvas = document.getElementById('title-canvas');
+const tCtx = titleCanvas.getContext('2d');
+
+const player = {
+  x: 12 * TILE_SIZE,
+  y: 7 * TILE_SIZE,
+  w: 26,
+  h: 28,
+  speed: 3.2,
+  facing: 'down',
+  walkFrame: 0,
+  isMoving: false
+};
+
+const camera = {
+  x: 0,
+  y: 0,
+  w: canvas.width,
+  h: canvas.height
+};
+
+const keys = {};
+
+window.addEventListener('keydown', (e) => {
+  const k = e.key.toLowerCase();
+  keys[k] = true;
+
+  if (['arrowup', 'arrowdown', 'arrowleft', 'arrowright', ' '].includes(k)) {
+    e.preventDefault();
+  }
+
+  if (gameState === 'title') {
+    handleTitleKey(e);
+  } else if (gameState === 'playing') {
+    if (k === 'e' || k === ' ') {
+      interactWithWorld();
+    } else if (k === 'b') {
+      openEvidenceBag();
+    } else if (k === 'm') {
+      openTownMap();
+    } else if (k === 'escape') {
+      returnToTitle();
+    }
+  } else if (gameState === 'court_battle') {
+    if (k === 'p') {
+      handleBattlePress();
+    } else if (k === 'e' || k === 'b') {
+      openEvidenceBag();
+    }
+  }
+});
+
+window.addEventListener('keyup', (e) => {
+  keys[e.key.toLowerCase()] = false;
+});
+
+const titleMenuButtons = Array.from(document.querySelectorAll('#menuContainer .menu-btn'));
+let titleMenuIndex = 0;
+
+function updateTitleSelection(idx) {
+  titleMenuButtons.forEach((b, i) => b.classList.toggle('active', i === idx));
+  titleMenuIndex = idx;
+  AudioEngine.playBlip();
+}
+
+function handleTitleKey(e) {
+  if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+    updateTitleSelection((titleMenuIndex + 1) % titleMenuButtons.length);
+  } else if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+    updateTitleSelection((titleMenuIndex - 1 + titleMenuButtons.length) % titleMenuButtons.length);
+  } else if (e.key === 'Enter' || e.key === ' ') {
+    handleMenuClick(titleMenuButtons[titleMenuIndex].dataset.action);
+  }
+}
+
+titleMenuButtons.forEach((btn, idx) => {
+  btn.addEventListener('mouseenter', () => updateTitleSelection(idx));
+  btn.addEventListener('click', () => handleMenuClick(btn.dataset.action));
+});
+
+function handleMenuClick(action) {
+  if (action === 'newgame') {
+    startNewGame();
+  } else if (action === 'continue') {
+    startNewGame();
+  } else if (action === 'evidence') {
+    openEvidenceBag();
+  } else if (action === 'courtroom') {
+    startCourtroomDirect();
+  } else if (action === 'settings') {
+    document.getElementById('modalSettings').classList.add('open');
+  }
+}
+
+function startNewGame() {
+  if (gameState !== 'title') return;
+  AudioEngine.playGavel();
+
+  const flash = document.getElementById('gavel-flash');
+  flash.style.opacity = '0.9';
+  setTimeout(() => flash.style.opacity = '0', 120);
+
+  const titleScreen = document.getElementById('title-screen');
+  titleScreen.classList.add('fade-out');
+
+  setTimeout(() => {
+    titleScreen.style.display = 'none';
+    document.getElementById('game-app').style.display = 'flex';
+    gameState = 'playing';
+
+    warpToMap('office', 12, 7);
+    AudioEngine.startBgm('overworld');
+    updateQuestStatus();
+
+    showDialogue(
+      "JUSTIN VANCE (DEFENSE COUNSEL)",
+      "Father... I know you trusted Dr. Aris. A seasoned judge doesn't let an amateur dentist kill him. I'll scour the hospital, the clinic, and the streets until the real culprit is unmasked."
+    );
+
+    requestAnimationFrame(mainGameLoop);
+  }, 850);
+}
+
+function startCourtroomDirect() {
+  const titleScreen = document.getElementById('title-screen');
+  titleScreen.classList.add('fade-out');
+
+  setTimeout(() => {
+    titleScreen.style.display = 'none';
+    document.getElementById('game-app').style.display = 'flex';
+    acquireClue('mercer_dossier');
+    acquireClue('mri_report');
+    acquireClue('dentist_invoice');
+    acquireClue('clinic_cctv');
+    acquireClue('atm_footage');
+    acquireClue('stolen_tooth');
+    acquireClue('wire_receipt');
+    startCourtroomBattle();
+  }, 600);
+}
+
+function returnToTitle() {
+  AudioEngine.stopBgm();
+  gameState = 'title';
+  document.getElementById('court-battle-overlay').classList.remove('active');
+  document.getElementById('verdict-modal').classList.remove('show');
+  document.getElementById('game-app').style.display = 'none';
+
+  const titleScreen = document.getElementById('title-screen');
+  titleScreen.style.display = 'flex';
+  setTimeout(() => titleScreen.classList.remove('fade-out'), 30);
+  requestAnimationFrame(titleScreenLoop);
+}
+
+function warpToMap(mapId, startX, startY) {
+  const target = worldMaps[mapId];
+  if (!target) return;
+
+  currentMap = target;
+  player.x = startX * TILE_SIZE;
+  player.y = startY * TILE_SIZE;
+  player.facing = 'down';
+
+  AudioEngine.playWarp();
+
+  const hudBadge = document.getElementById('hudLocationBadge');
+  if (hudBadge) hudBadge.textContent = `📍 ${target.name}`;
+
+  const banner = document.getElementById('location-banner');
+  if (banner) {
+    banner.textContent = target.name;
+    banner.classList.add('show');
+    setTimeout(() => banner.classList.remove('show'), 1800);
+  }
+
+  if (mapId === 'courtroom') {
+    AudioEngine.startBgm('court');
+  } else {
+    AudioEngine.startBgm('overworld');
+  }
+}
+
+function isTileSolid(map, tx, ty) {
+  if (tx < 0 || tx >= map.w || ty < 0 || ty >= map.h) return true;
+  const tile = map.tiles[ty][tx];
+  const solidTiles = ['tree', 'brick_wall', 'hospital_wall', 'clinic_wall', 'wood_wall', 'court_wall', 'water'];
+  return solidTiles.includes(tile);
+}
+
+function checkWorldCollision(nx, ny) {
+  const map = currentMap;
+  const corners = [
+    { x: nx + 4, y: ny + 12 },
+    { x: nx + player.w - 4, y: ny + 12 },
+    { x: nx + 4, y: ny + player.h - 2 },
+    { x: nx + player.w - 4, y: ny + player.h - 2 }
+  ];
+
+  for (let c of corners) {
+    const tx = Math.floor(c.x / TILE_SIZE);
+    const ty = Math.floor(c.y / TILE_SIZE);
+    if (isTileSolid(map, tx, ty)) return true;
+  }
+
+  for (let prop of map.props) {
+    const px = prop.x * TILE_SIZE;
+    const py = prop.y * TILE_SIZE;
+    const pw = prop.w * TILE_SIZE;
+    const ph = prop.h * TILE_SIZE;
+    if (nx < px + pw && nx + player.w > px && ny < py + ph && ny + player.h > py) {
+      return true;
+    }
+  }
+
+  for (let npc of map.npcs) {
+    const npx = npc.x * TILE_SIZE;
+    const npy = npc.y * TILE_SIZE;
+    if (nx < npx + 28 && nx + player.w > npx + 4 && ny < npy + 30 && ny + player.h > npy + 10) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function interactWithWorld() {
+  const reach = 24;
+  let checkX = player.x;
+  let checkY = player.y;
+
+  if (player.facing === 'up') checkY -= reach;
+  else if (player.facing === 'down') checkY += reach;
+  else if (player.facing === 'left') checkX -= reach;
+  else if (player.facing === 'right') checkX += reach;
+
+  const map = currentMap;
+
+  for (let npc of map.npcs) {
+    const npx = npc.x * TILE_SIZE;
+    const npy = npc.y * TILE_SIZE;
+    const dist = Math.hypot(checkX - npx, checkY - npy);
+    if (dist < 40) {
+      AudioEngine.playBlip();
+      showDialogue(npc.name, npc.text);
+      if (npc.givesClue) acquireClue(npc.givesClue);
+      return;
+    }
+  }
+
+  for (let prop of map.props) {
+    const px = prop.x * TILE_SIZE;
+    const py = prop.y * TILE_SIZE;
+    const pw = prop.w * TILE_SIZE;
+    const ph = prop.h * TILE_SIZE;
+
+    if (checkX >= px - 16 && checkX <= px + pw + 16 && checkY >= py - 16 && checkY <= py + ph + 16) {
+      AudioEngine.playBlip();
+      showDialogue(prop.name, prop.text);
+      if (prop.givesClue) acquireClue(prop.givesClue);
+      if (prop.isCourtTrigger) {
+        promptCourtTrigger();
+      }
+      return;
+    }
+  }
+
+  for (let warp of map.warps) {
+    const wx = warp.x * TILE_SIZE;
+    const wy = warp.y * TILE_SIZE;
+    if (Math.hypot(player.x - wx, player.y - wy) < 40) {
+      if (warp.reqClue && !allClues[warp.reqClue].unlocked) {
+        showDialogue("LOCKED PERIMETER", "Police tape blocks the entrance. You need verified vehicle surveillance records to search this warehouse.");
+        return;
+      }
+      warpToMap(warp.targetMap, warp.targetX, warp.targetY);
+      return;
+    }
+  }
+
+  AudioEngine.playBlip();
+  showDialogue("JUSTIN VANCE (DEFENSE COUNSEL)", "I must search for clues regarding the MRI machine, the dental clinic safe, and the ATM footage across the street.");
+}
+
+function promptCourtTrigger() {
+  const choicesEl = document.getElementById('dialogueChoices');
+  choicesEl.innerHTML = '';
+  choicesEl.classList.add('active');
+
+  const btnStart = document.createElement('button');
+  btnStart.className = 'choice-btn';
+  btnStart.textContent = "⚖ TAKE POSITION & BEGIN TRIAL";
+  btnStart.onclick = () => {
+    choicesEl.classList.remove('active');
+    startCourtroomBattle();
+  };
+
+  const btnWait = document.createElement('button');
+  btnWait.className = 'choice-btn';
+  btnWait.textContent = "WAIT (COLLECT MORE EVIDENCE)";
+  btnWait.onclick = () => {
+    choicesEl.classList.remove('active');
+    showDialogue("DEFENSE COUNSEL", "I need to ensure all my evidence is in order before facing Kaizen.");
+  };
+
+  choicesEl.appendChild(btnStart);
+  choicesEl.appendChild(btnWait);
+}
+
+function showDialogue(speaker, text) {
+  const speakerEl = document.getElementById('speakerLabel');
+  const textEl = document.getElementById('dialogueText');
+  speakerEl.textContent = speaker;
+  textEl.textContent = text;
+}
+
+function updatePlayerMovement() {
+  let dx = 0;
+  let dy = 0;
+
+  if (keys['arrowup'] || keys['w']) { dy -= 1; player.facing = 'up'; }
+  else if (keys['arrowdown'] || keys['s']) { dy += 1; player.facing = 'down'; }
+  if (keys['arrowleft'] || keys['a']) { dx -= 1; player.facing = 'left'; }
+  else if (keys['arrowright'] || keys['d']) { dx += 1; player.facing = 'right'; }
+
+  if (dx !== 0 && dy !== 0) {
+    dx *= 0.7071;
+    dy *= 0.7071;
+  }
+
+  player.isMoving = (dx !== 0 || dy !== 0);
+
+  const nextX = player.x + dx * player.speed;
+  const nextY = player.y + dy * player.speed;
+
+  if (!checkWorldCollision(nextX, player.y)) player.x = nextX;
+  if (!checkWorldCollision(player.x, nextY)) player.y = nextY;
+
+  if (player.isMoving) {
+    player.walkFrame += 0.2;
+  } else {
+    player.walkFrame = 0;
+  }
+
+  for (let warp of currentMap.warps) {
+    const wx = warp.x * TILE_SIZE;
+    const wy = warp.y * TILE_SIZE;
+    if (Math.hypot(player.x - wx, player.y - wy) < 18) {
+      if (warp.reqClue && !allClues[warp.reqClue].unlocked) {
+        // Locked
+      } else {
+        warpToMap(warp.targetMap, warp.targetX, warp.targetY);
+        break;
+      }
+    }
+  }
+
+  if (currentMap.id === 'overworld') {
+    camera.x = Math.round(player.x + player.w / 2 - canvas.width / 2);
+    camera.y = Math.round(player.y + player.h / 2 - canvas.height / 2);
+
+    const maxX = currentMap.w * TILE_SIZE - canvas.width;
+    const maxY = currentMap.h * TILE_SIZE - canvas.height;
+
+    camera.x = Math.max(0, Math.min(camera.x, maxX));
+    camera.y = Math.max(0, Math.min(camera.y, maxY));
+  } else {
+    camera.x = Math.round((currentMap.w * TILE_SIZE - canvas.width) / 2);
+    camera.y = Math.round((currentMap.h * TILE_SIZE - canvas.height) / 2);
+  }
+}
+
+function drawWorld() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const map = currentMap;
+
+  for (let y = 0; y < map.h; y++) {
+    for (let x = 0; x < map.w; x++) {
+      const tileType = map.tiles[y][x];
+      const screenX = x * TILE_SIZE - camera.x;
+      const screenY = y * TILE_SIZE - camera.y;
+
+      if (screenX + TILE_SIZE >= 0 && screenX <= canvas.width && screenY + TILE_SIZE >= 0 && screenY <= canvas.height) {
+        drawTile(ctx, tileType, screenX, screenY);
+      }
+    }
+  }
+
+  for (let p of map.props) {
+    const px = p.x * TILE_SIZE - camera.x;
+    const py = p.y * TILE_SIZE - camera.y;
+    const pw = p.w * TILE_SIZE;
+    const ph = p.h * TILE_SIZE;
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    ctx.fillRect(px + 4, py + 4, pw, ph);
+
+    if (p.type === 'desk') {
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(px, py, pw, ph);
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(px, py, pw, 8);
+      ctx.fillStyle = '#15803d';
+      ctx.fillRect(px + 10, py - 4, 14, 6);
+      ctx.fillStyle = '#fef3c7';
+      ctx.fillRect(px + 32, py + 4, 18, 12);
+    } else if (p.type === 'mri') {
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(px, py, pw, ph);
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(px, py, pw, ph);
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(px + pw / 2, py + ph / 2, pw / 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    } else if (p.type === 'chair') {
+      ctx.fillStyle = '#0369a1';
+      ctx.fillRect(px + 8, py + 12, pw - 16, ph - 20);
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(px + pw / 2 - 3, py + ph - 10, 6, 10);
+    } else if (p.type === 'atm') {
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(px, py, pw, ph);
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(px + 8, py + 8, pw - 16, 20);
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(px + pw / 2, py + 4, 3, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (p.type === 'safe') {
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(px, py, pw, ph);
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(px, py, pw, ph);
+      ctx.fillStyle = '#facc15';
+      ctx.beginPath();
+      ctx.arc(px + pw / 2, py + ph / 2, 8, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (p.type === 'chalk') {
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.strokeRect(px + 10, py + 10, pw - 20, ph - 20);
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#dc2626';
+      ctx.fillRect(px + pw - 20, py + 10, 6, 12);
+    } else if (p.type === 'fountain') {
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(px, py, pw, ph);
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(px + 4, py + 4, pw - 8, ph - 8);
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(px + pw / 2 - 2, py + ph / 2 - 12, 4, 16);
+    } else {
+      ctx.fillStyle = '#573322';
+      ctx.fillRect(px, py, pw, ph);
+    }
+  }
+
+  for (let npc of map.npcs) {
+    const npx = npc.x * TILE_SIZE - camera.x;
+    const npy = npc.y * TILE_SIZE - camera.y;
+
+    if (npc.sprite === 'dentist') {
+      renderSprite(ctx, dentistSprite, npx, npy, dentistPalette, 2);
+    } else if (npc.sprite === 'radiologist') {
+      renderSprite(ctx, radiologistSprite, radiologistPalette, 2);
+    } else if (npc.sprite === 'detective') {
+      renderSprite(ctx, detectiveSprite, detectivePalette, 2);
+    } else if (npc.sprite === 'kaizen') {
+      renderSprite(ctx, kaizenSprite, kaizenPalette, 2);
+    } else if (npc.sprite === 'chief_judge') {
+      renderSprite(ctx, judgeSprite, judgePalette, 2);
+    } else {
+      renderSprite(ctx, dentistSprite, npx, npy, dentistPalette, 2);
+    }
+  }
+
+  drawPlayerSprite();
+}
+
+function drawPlayerSprite() {
+  const px = Math.round(player.x - camera.x);
+  const py = Math.round(player.y - camera.y);
+
+  let step = 0;
+  if (player.isMoving) {
+    const f = Math.floor(player.walkFrame) % 4;
+    if (f === 1) step = 1;
+    else if (f === 3) step = 2;
+  }
+
+  let spriteKey = 'down_idle';
+  let flip = false;
+
+  if (player.facing === 'down') {
+    spriteKey = step === 0 ? 'down_idle' : (step === 1 ? 'down_walk1' : 'down_walk2');
+  } else if (player.facing === 'up') {
+    spriteKey = step === 0 ? 'up_idle' : (step === 1 ? 'up_walk1' : 'up_walk2');
+  } else if (player.facing === 'left') {
+    spriteKey = step === 0 ? 'side_idle' : (step === 1 ? 'side_walk1' : 'side_walk2');
+    flip = true;
+  } else if (player.facing === 'right') {
+    spriteKey = step === 0 ? 'side_idle' : (step === 1 ? 'side_walk1' : 'side_walk2');
+    flip = false;
+  }
+
+  renderSprite(ctx, lawyerSprites[spriteKey], px, py, lawyerPalette, 2, flip);
+}
+
+function mainGameLoop() {
+  if (gameState === 'playing') {
+    updatePlayerMovement();
+    drawWorld();
+    requestAnimationFrame(mainGameLoop);
+  }
+}
+
+// Touch control bindings
+document.getElementById('btnDpadUp').addEventListener('touchstart', (e) => { e.preventDefault(); keys['w'] = true; });
+document.getElementById('btnDpadUp').addEventListener('touchend', (e) => { e.preventDefault(); keys['w'] = false; });
+document.getElementById('btnDpadDown').addEventListener('touchstart', (e) => { e.preventDefault(); keys['s'] = true; });
+document.getElementById('btnDpadDown').addEventListener('touchend', (e) => { e.preventDefault(); keys['s'] = false; });
+document.getElementById('btnDpadLeft').addEventListener('touchstart', (e) => { e.preventDefault(); keys['a'] = true; });
+document.getElementById('btnDpadLeft').addEventListener('touchend', (e) => { e.preventDefault(); keys['a'] = false; });
+document.getElementById('btnDpadRight').addEventListener('touchstart', (e) => { e.preventDefault(); keys['d'] = true; });
+document.getElementById('btnDpadRight').addEventListener('touchend', (e) => { e.preventDefault(); keys['d'] = false; });
+
+document.getElementById('btnTouchInteract').addEventListener('click', interactWithWorld);
+document.getElementById('btnTouchBag').addEventListener('click', openEvidenceBag);
+document.getElementById('btnTouchMap').addEventListener('click', openTownMap);
+
+document.getElementById('btnOpenBag').addEventListener('click', openEvidenceBag);
+document.getElementById('btnOpenMap').addEventListener('click', openTownMap);
+document.getElementById('btnReturnToTitle').addEventListener('click', returnToTitle);
+document.getElementById('btnCloseBag').addEventListener('click', closeEvidenceBag);
+document.getElementById('btnCloseMap').addEventListener('click', closeTownMap);
+document.getElementById('btnVerdictRestart').addEventListener('click', returnToTitle);
+document.getElementById('btnCloseSettings').addEventListener('click', () => {
+  document.getElementById('modalSettings').classList.remove('open');
+});
+
+document.getElementById('btnBattlePress').addEventListener('click', handleBattlePress);
+document.getElementById('btnBattlePresent').addEventListener('click', openEvidenceBag);
+
+document.getElementById('btnToggleAudio').addEventListener('click', () => {
+  AudioEngine.enabled = !AudioEngine.enabled;
+  if (!AudioEngine.enabled) AudioEngine.stopBgm();
+  else if (gameState === 'court_battle') AudioEngine.startBgm('court');
+  else if (gameState === 'playing') AudioEngine.startBgm('overworld');
+  document.getElementById('btnToggleAudio').textContent = AudioEngine.enabled ? '🔊 AUDIO' : '🔇 MUTED';
+});
+
+document.getElementById('toggleAudioBtn').addEventListener('click', () => {
+  AudioEngine.enabled = !AudioEngine.enabled;
+  document.getElementById('toggleAudioBtn').textContent = AudioEngine.enabled ? 'ENABLED' : 'MUTED';
+});
+
+document.getElementById('toggleCrtBtn').addEventListener('click', () => {
+  const crt = document.getElementById('crtOverlay');
+  crt.style.display = (crt.style.display === 'none') ? 'block' : 'none';
+  document.getElementById('toggleCrtBtn').textContent = (crt.style.display === 'none') ? 'OFF' : 'ACTIVE';
+});
+
+// Title Canvas Background
+let titleDust = [];
+function initTitleDust() {
+  titleDust = [];
+  for (let i = 0; i < 45; i++) {
+    titleDust.push({
+      x: Math.random() * titleCanvas.width,
+      y: Math.random() * titleCanvas.height,
+      r: Math.random() * 2 + 0.6,
+      alpha: Math.random() * 0.6 + 0.2,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: -Math.random() * 0.4 - 0.1
+    });
+  }
+}
+
+function resizeTitleCanvas() {
+  titleCanvas.width = titleCanvas.parentElement.clientWidth;
+  titleCanvas.height = titleCanvas.parentElement.clientHeight;
+  initTitleDust();
+}
+window.addEventListener('resize', resizeTitleCanvas);
+
+function drawTitleScreenArt() {
+  const w = titleCanvas.width;
+  const h = titleCanvas.height;
+  if (!w || !h) return;
+
+  tCtx.fillStyle = '#09070e';
+  tCtx.fillRect(0, 0, w, h);
+
+  tCtx.fillStyle = '#14111d';
+  tCtx.fillRect(w * 0.64, h * 0.06, w * 0.32, h * 0.62);
+  tCtx.strokeStyle = '#251c2e';
+  tCtx.lineWidth = 4;
+  tCtx.strokeRect(w * 0.64, h * 0.06, w * 0.32, h * 0.62);
+
+  tCtx.fillStyle = '#171110';
+  tCtx.fillRect(0, 0, w * 0.38, h);
+  tCtx.strokeStyle = '#2d1e16';
+  tCtx.lineWidth = 5;
+  tCtx.strokeRect(0, 0, w * 0.38, h);
+
+  tCtx.strokeStyle = '#ef4444';
+  tCtx.lineWidth = 2;
+  tCtx.shadowColor = '#dc2626';
+  tCtx.shadowBlur = 8;
+  tCtx.beginPath();
+  tCtx.moveTo(w * 0.06, h * 0.14);
+  tCtx.lineTo(w * 0.22, h * 0.12);
+  tCtx.lineTo(w * 0.24, h * 0.38);
+  tCtx.lineTo(w * 0.08, h * 0.44);
+  tCtx.lineTo(w * 0.18, h * 0.72);
+  tCtx.stroke();
+  tCtx.shadowBlur = 0;
+
+  const lampX = w * 0.08;
+  const lampY = h * 0.74;
+  const lampGlow = tCtx.createRadialGradient(lampX, lampY, 5, lampX + 60, lampY + 40, w * 0.42);
+  lampGlow.addColorStop(0, 'rgba(253, 224, 71, 0.4)');
+  lampGlow.addColorStop(0.4, 'rgba(245, 158, 11, 0.15)');
+  lampGlow.addColorStop(1, 'transparent');
+  tCtx.fillStyle = lampGlow;
+  tCtx.beginPath();
+  tCtx.arc(lampX, lampY, w * 0.45, 0, Math.PI * 2);
+  tCtx.fill();
+
+  tCtx.fillStyle = '#180e08';
+  tCtx.fillRect(0, h * 0.78, w * 0.48, h * 0.22);
+  tCtx.fillStyle = '#d97706';
+  tCtx.fillRect(w * 0.03, h * 0.83, 80, 5);
+
+  const ax = w * 0.62;
+  tCtx.fillStyle = '#08060a';
+  tCtx.beginPath();
+  tCtx.arc(ax, h * 0.28, 42, 0, Math.PI * 2);
+  tCtx.moveTo(ax - 24, h * 0.34);
+  tCtx.lineTo(ax - 85, h * 0.46);
+  tCtx.lineTo(ax - 95, h);
+  tCtx.lineTo(ax + 95, h);
+  tCtx.lineTo(ax + 75, h * 0.45);
+  tCtx.lineTo(ax + 24, h * 0.34);
+  tCtx.closePath();
+  tCtx.fill();
+
+  for (let m of titleDust) {
+    m.x += m.vx;
+    m.y += m.vy;
+    if (m.y < 0) {
+      m.y = h;
+      m.x = Math.random() * w;
+    }
+    tCtx.fillStyle = `rgba(253, 224, 71, ${m.alpha})`;
+    tCtx.beginPath();
+    tCtx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+    tCtx.fill();
+  }
+}
+
+function titleScreenLoop() {
+  if (gameState === 'title') {
+    drawTitleScreenArt();
+    requestAnimationFrame(titleScreenLoop);
+  }
+}
+
+window.onload = function() {
+  buildMapGrids();
+  resizeTitleCanvas();
+  updateClueCounter();
+  requestAnimationFrame(titleScreenLoop);
+};
+</script>
+</body>
+</html>
